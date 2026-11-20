@@ -29,3 +29,4 @@ yarn-error.log*
 
 # raw unreferenced WhatsApp duplicates dropped in videos/ (compressed versions live in public/images/reviews/)
 /public/videos/*.jpeg
+
