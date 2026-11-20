@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #070D17;
+    color: #FFFFFF;
+    font-size: 16px;
+  }
+
+  body {
+    background-color: #070D17;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(200, 169, 106, 0.09), transparent 45%),
+      radial-gradient(circle at 80% 40%, rgba(16, 28, 48, 0.7), transparent 55%);
+    color: #FFFFFF;
+    font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #C8A96A;
+    color: #070D17;
+  }
+
+  a,
+  button,
+  summary {
+    touch-action: manipulation;
+  }
+}
+
+@keyframes tentacleSway {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-4px, -6px, 0) rotate(1.2deg);
+  }
+}
+
+@keyframes heroSlowZoom {
+  0%, 100% {
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    transform: scale3d(1.06, 1.06, 1);
+  }
+}
+
+.animate-tentacle-sway {
+  animation: tentacleSway 11s ease-in-out infinite;
+}
+
+.animate-hero-slow-zoom {
+  animation: heroSlowZoom 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-tentacle-sway,
+  .animate-hero-slow-zoom {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

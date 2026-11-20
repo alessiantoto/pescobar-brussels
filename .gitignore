@@ -1,0 +1,31 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/.next-dev/
+/out/
+
+# build & typescript
+/build
+*.tsbuildinfo
+next-env.d.ts
+
+# debug & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# OS & editor
+.DS_Store
+*.pem
+.vscode/
+
+# raw unreferenced WhatsApp duplicates dropped in videos/ (compressed versions live in public/images/reviews/)
+/public/videos/*.jpeg
