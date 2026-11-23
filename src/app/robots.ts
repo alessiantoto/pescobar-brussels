@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next';
 import { SITE_CONFIG } from '@/config/site';
 
 const PUBLIC_DISALLOW = [
+  '/admin',
+  '/admin/',
   '/api/',
   '/fr/qr-menu',
   '/nl/qr-menu',

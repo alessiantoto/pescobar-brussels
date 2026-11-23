@@ -183,6 +183,7 @@ export function MenuExplorer({
         <div className="mx-auto max-w-5xl">
           <div
             role="tablist"
+            data-menu-tablist="true"
             aria-label={`${ui.foodTab} / ${ui.drinkTab}`}
             className="grid grid-cols-2 border-b border-white/10 bg-[#0C1524]"
           >
@@ -232,6 +233,7 @@ export function MenuExplorer({
             <div className="flex items-center gap-2 px-3 py-2.5 sm:px-6">
               <button
                 type="button"
+                data-category-back="true"
                 onClick={() => {
                   setSelectedCategoryId(null);
                   setSearchQuery('');
@@ -249,6 +251,7 @@ export function MenuExplorer({
                     <button
                       key={cat.id}
                       type="button"
+                      data-category-pill="true"
                       aria-pressed={isActive}
                       onClick={() => handleSelectCategory(cat.id)}
                       className={`h-9 shrink-0 rounded-xl px-3.5 text-xs font-bold tracking-wide uppercase transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DFC286] ${
@@ -329,6 +332,7 @@ export function MenuExplorer({
                 <button
                   key={cat.id}
                   type="button"
+                  data-category-photo-card="true"
                   onClick={() => handleSelectCategory(cat.id)}
                   className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/15 bg-[#0C1524] text-center shadow-xl transition-all hover:border-[#C8A96A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DFC286]"
                 >
@@ -400,7 +404,10 @@ export function MenuExplorer({
                 return (
                   <section key={cat.id} id={`cat-${cat.id}`} className="scroll-mt-32">
                     {/* Category Banner Header inside Detail View */}
-                    <div className="relative mb-6 overflow-hidden rounded-2xl border border-[#C8A96A]/30 bg-[#0C1524] p-6 sm:p-8">
+                    <div
+                      data-category-detail-header="true"
+                      className="relative mb-6 overflow-hidden rounded-2xl border border-[#C8A96A]/30 bg-[#0C1524] p-6 sm:p-8"
+                    >
                       {CATEGORY_COVER_IMAGES[cat.id] && (
                         <Image
                           src={CATEGORY_COVER_IMAGES[cat.id]}

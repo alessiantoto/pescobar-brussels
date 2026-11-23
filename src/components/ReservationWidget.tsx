@@ -473,6 +473,32 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
       return;
     }
     setShowStep3Errors(false);
+
+    // Persist online reservation to Postgres when Supabase is configured (non-blocking)
+    const mappedZone =
+      zone === 'terrace'
+        ? 'window_terrace'
+        : zone === 'groupTable'
+          ? 'lounge'
+          : 'main';
+    fetch('/api/reservations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reservation_date: date,
+        reservation_time: time,
+        service: Number(time.split(':')[0]) < 16 ? 'lunch' : 'dinner',
+        party_size: Number(guestsDisplay) || 2,
+        zone: mappedZone,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        phone: phone.trim(),
+        occasion: occasionDisplay || null,
+        notes: notes.trim() || null,
+        locale,
+      }),
+    }).catch(() => {});
+
     goToStep(4);
   };
 

@@ -1,6 +1,12 @@
 import type { Locale } from '@/config/site';
-import { MENU_CATEGORIES, MENU_ITEMS } from '@/data/menu';
+import { getCachedFullMenuData } from '@/lib/admin/menu-repo';
+import {
+  effectiveStatus,
+  isChannelVisible,
+  todayInBrussels,
+} from '@/lib/menu-contract';
 import type { Dictionary } from '@/i18n/dictionaries';
+import type { MenuTag } from '@/data/menu';
 import type {
   LocalizedMenuCategory,
   LocalizedMenuItem,
@@ -212,55 +218,92 @@ export function getMenuExplorerLabels(dict: Dictionary): MenuExplorerLabels {
 }
 
 /**
- * Server-only mapper that strips all unused languages from MENU_CATEGORIES and MENU_ITEMS
- * before passing props across the Server -> Client boundary.
+ * Server-only mapper backed by `getCachedFullMenuData()` (Supabase + static fallback),
+ * stripping unused languages, filtering hidden/channel-disabled items, and exposing `isSoldOut`.
  */
-export function getLocalizedMenuData(locale: Locale): {
+export async function getLocalizedMenuData(
+  locale: Locale,
+  channel: 'site' | 'qr' = 'site'
+): Promise<{
   categories: LocalizedMenuCategory[];
   items: LocalizedMenuItem[];
-} {
-  const orderedRawCategories = [...MENU_CATEGORIES].sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'food' ? -1 : 1;
-    const order = a.type === 'food' ? FOOD_CATEGORY_ORDER : DRINK_CATEGORY_ORDER;
-    return order.indexOf(a.id) - order.indexOf(b.id);
-  });
+}> {
+  const { categories: rawCategories, items: rawItems } =
+    await getCachedFullMenuData();
+  const today = todayInBrussels();
+
+  const orderedRawCategories = [...rawCategories]
+    .filter((cat) => cat.is_visible)
+    .sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'food' ? -1 : 1;
+      const order = a.type === 'food' ? FOOD_CATEGORY_ORDER : DRINK_CATEGORY_ORDER;
+      const ai = order.indexOf(a.id);
+      const bi = order.indexOf(b.id);
+      if (ai !== -1 && bi !== -1) return ai - bi;
+      if (ai !== -1) return -1;
+      if (bi !== -1) return 1;
+      return a.sort_order - b.sort_order;
+    });
+
+  const visibleCatIds = new Set(orderedRawCategories.map((c) => c.id));
 
   const categories: LocalizedMenuCategory[] = orderedRawCategories.map((cat) => {
-    const subtitle = CATEGORY_SUBTITLES[cat.id]?.[locale];
+    const subtitle =
+      cat.subtitles?.[locale] || CATEGORY_SUBTITLES[cat.id]?.[locale];
     return {
       id: cat.id,
       type: cat.type,
-      name: cat.names[locale],
+      name: cat.names[locale] || cat.names.fr,
       ...(subtitle ? { subtitle } : {}),
     };
   });
 
-  const items: LocalizedMenuItem[] = MENU_ITEMS.map((item) => {
-    const t = item.translations[locale];
-    const resolvedDrinkImage =
-      item.type === 'drink' &&
-      !item.image &&
-      (/aerosoli/i.test(item.translations.fr.name) ||
-        /aerosoli/i.test(item.translations.ro.name))
-        ? '/images/aerosoli-wines-transparent.png'
-        : null;
+  const items: LocalizedMenuItem[] = rawItems
+    .filter((item) => {
+      if (!visibleCatIds.has(item.category_id)) return false;
+      if (!isChannelVisible(item, channel)) return false;
+      return effectiveStatus(item, today) !== 'hidden';
+    })
+    .map((item) => {
+      const name = item.names[locale] || item.names.fr;
+      const description = item.descriptions[locale] || item.descriptions.fr || '';
+      const nutrition = item.nutrition?.[locale] || undefined;
+      const chefNote = item.chef_notes?.[locale] || undefined;
 
-    return {
-      id: item.id,
-      postId: item.postId,
-      categoryId: item.categoryId,
-      type: item.type,
-      priceEur: item.priceEur,
-      priceFormatted: item.priceFormatted,
-      weight: item.weight,
-      image: item.image ?? resolvedDrinkImage,
-      allergens: item.allergens,
-      tags: item.tags,
-      name: t.name,
-      description: t.description,
-      ...(t.nutrition ? { nutrition: t.nutrition } : {}),
-    };
-  });
+      const resolvedDrinkImage =
+        item.type === 'drink' &&
+        !item.image &&
+        (/aerosoli/i.test(item.names.fr) || /aerosoli/i.test(item.names.ro))
+          ? '/images/aerosoli-wines-transparent.png'
+          : null;
+
+      const weight =
+        item.weight_value !== null && item.weight_value !== undefined
+          ? `${item.weight_value}${item.weight_unit}`
+          : '';
+
+      const priceStr = Number.isInteger(item.price_eur)
+        ? `${item.price_eur}€`
+        : `${item.price_eur.toFixed(2).replace('.', ',')}€`;
+
+      return {
+        id: item.id,
+        postId: item.legacy_post_id || item.id,
+        categoryId: item.category_id,
+        type: item.type,
+        priceEur: item.price_eur,
+        priceFormatted: priceStr,
+        weight,
+        image: item.image ?? resolvedDrinkImage,
+        allergens: item.allergens,
+        tags: item.badges as unknown as MenuTag[],
+        name,
+        description,
+        isSoldOut: effectiveStatus(item, today) === 'sold_out',
+        ...(chefNote ? { chefNote } : {}),
+        ...(nutrition ? { nutrition } : {}),
+      };
+    });
 
   return { categories, items };
 }

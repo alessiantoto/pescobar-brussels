@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '@/config/site';
 
 function isSupportedLocale(value: string | undefined): value is Locale {
@@ -55,19 +56,73 @@ function detectPreferredLocale(request: NextRequest): Locale {
   return DEFAULT_LOCALE;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname.startsWith('/images') ||
+    pathname.startsWith('/videos') ||
     pathname === '/robots.txt' ||
     pathname === '/sitemap.xml' ||
     pathname === '/favicon.ico' ||
     pathname.includes('.')
   ) {
-    return NextResponse.next();
+    const cleanHeaders = new Headers(request.headers);
+    cleanHeaders.delete('x-pathname');
+    return NextResponse.next({ request: { headers: cleanHeaders } });
+  }
+
+  // Redirect accidental localized admin paths (e.g. /fr/admin -> /admin)
+  const localizedAdminMatch = pathname.match(/^\/(fr|nl|en|ro)(\/admin(?:\/.*)?)$/);
+  if (localizedAdminMatch) {
+    const url = request.nextUrl.clone();
+    url.pathname = localizedAdminMatch[2];
+    return NextResponse.redirect(url);
+  }
+
+  // Isolated Admin Console path — zero locale redirect, strict noindex + session refresh
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    const cleanHeaders = new Headers(request.headers);
+    cleanHeaders.set('x-pathname', pathname);
+
+    let response = NextResponse.next({ request: { headers: cleanHeaders } });
+
+    const hasSupabaseCookie = request.cookies
+      .getAll()
+      .some((c) => c.name.startsWith('sb-'));
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (
+      hasSupabaseCookie &&
+      supabaseUrl &&
+      supabaseAnon &&
+      !supabaseUrl.includes('placeholder')
+    ) {
+      const supabase = createServerClient(supabaseUrl, supabaseAnon, {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            );
+            response = NextResponse.next({ request: { headers: cleanHeaders } });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
+        },
+      });
+      await supabase.auth.getUser().catch(() => null);
+    }
+
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+    return response;
   }
 
   const matchedLocale = LOCALES.find(

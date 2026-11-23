@@ -107,7 +107,10 @@ function AmbientClipCard({
   }, [hasVideo, clip.video]);
 
   return (
-    <article className="group relative aspect-[9/16] w-full overflow-hidden rounded-2xl border border-white/15 bg-[#0C1524] shadow-xl">
+    <article
+      data-clip-card="true"
+      className="group relative aspect-[9/16] w-full overflow-hidden rounded-2xl border border-white/15 bg-[#0C1524] shadow-xl"
+    >
       <Image
         src={clip.poster}
         alt={clip.title[locale]}

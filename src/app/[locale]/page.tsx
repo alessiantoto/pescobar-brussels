@@ -268,7 +268,11 @@ export default async function HomePage({
       )}
 
       {/* 1. HERO: full-bleed video, atmospheric vignette, clean typography & CTAs */}
-      <section className="relative flex min-h-[82dvh] flex-col justify-between overflow-hidden border-b border-white/10 bg-[#050911] sm:min-h-[85dvh]">
+      <section
+        id="hero"
+        data-hero-section="true"
+        className="relative flex min-h-[82dvh] flex-col justify-between overflow-hidden border-b border-white/10 bg-[#050911] sm:min-h-[85dvh]"
+      >
         <div className="pointer-events-none absolute inset-0 z-0">
           <Image
             src={HERO_VIDEO.poster}
@@ -304,7 +308,7 @@ export default async function HomePage({
         </div>
 
         <div className="relative z-10 flex justify-center px-4 pt-6 sm:pt-9">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/20 bg-[#070D17]/70 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase text-white/95 backdrop-blur-md shadow-lg">
+          <span className="hero-location-badge inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/20 bg-[#070D17]/70 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase text-white/95 backdrop-blur-md shadow-lg">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C8A96A]" />
             <span>{c.location}</span>
           </span>
@@ -315,7 +319,7 @@ export default async function HomePage({
             {c.heroCategory}
           </p>
           <div className="mx-auto mt-3 h-px w-12 bg-gradient-to-r from-transparent via-[#C8A96A]/80 to-transparent" />
-          <h1 className="mt-3.5 text-3xl font-extrabold leading-[1.12] tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.92)] sm:text-5xl">
+          <h1 className="hero-title mt-3.5 text-3xl font-extrabold leading-[1.12] tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.92)] sm:text-5xl">
             {c.title}
           </h1>
           <div className="mx-auto mt-7 flex w-full max-w-sm flex-col gap-3 sm:mt-8 sm:max-w-md sm:flex-row">
@@ -328,14 +332,14 @@ export default async function HomePage({
             </Link>
             <Link
               href={`/${locale}/menu`}
-              className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-white/30 bg-[#070D17]/55 px-6 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:border-[#C8A96A] hover:bg-[#070D17]/75"
+              className="hero-secondary-btn inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-white/30 bg-[#070D17]/55 px-6 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:border-[#C8A96A] hover:bg-[#070D17]/75"
             >
               {c.menu}
             </Link>
           </div>
         </div>
 
-        <div className="relative z-10 border-t border-white/10 bg-[#070D17]/80 backdrop-blur-md">
+        <div className="hero-tags-bar relative z-10 border-t border-white/10 bg-[#070D17]/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-6 gap-y-1.5 px-4 py-3 text-xs font-semibold text-white/85">
             {c.tags.map((tag) => (
               <span key={tag} className="flex items-center gap-2">
@@ -372,6 +376,7 @@ export default async function HomePage({
               <Link
                 key={cat.catId}
                 href={`/${locale}/menu?cat=${cat.catId}`}
+                data-media-card="true"
                 className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-[#0C1524] transition-colors hover:border-[#C8A96A]/60"
               >
                 <Image
@@ -406,7 +411,8 @@ export default async function HomePage({
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             <Link
               href={`/${locale}/menu?cat=plateaux`}
-              className="group relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl border border-[#C8A96A]/35 bg-[#070D17]"
+              data-media-card="true"
+              className="home-offer-card group relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl border border-[#C8A96A]/35 bg-[#070D17]"
             >
               <Image
                 src="/images/catalog/pescobar-octopus-taverna-racilor-platouri.jpg"
@@ -448,7 +454,8 @@ export default async function HomePage({
 
             <Link
               href={`/${locale}/business-lunch`}
-              className="group relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl border border-white/15"
+              data-media-card="true"
+              className="home-offer-card group relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl border border-white/15"
             >
               <Image
                 src="/images/catalog/pescobar-octopus-taverna-racilor-supe.jpg"

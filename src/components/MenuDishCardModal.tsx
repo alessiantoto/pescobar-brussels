@@ -50,7 +50,10 @@ export function MenuDishCard({
   );
 
   return (
-    <article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0C1524] shadow-lg transition-all hover:border-[#C8A96A]/55 focus-within:border-[#C8A96A] focus-within:ring-2 focus-within:ring-[#C8A96A]/50">
+    <article
+      data-dish-card="true"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0C1524] shadow-lg transition-all hover:border-[#C8A96A]/55 focus-within:border-[#C8A96A] focus-within:ring-2 focus-within:ring-[#C8A96A]/50"
+    >
       <div>
         {/* Food photo banner vs. Aerosoli bottle showcase */}
         {dishImage && !isDrinkWineBottle && (
@@ -103,14 +106,30 @@ export function MenuDishCard({
                 {t.name}
               </button>
             </h3>
-            <span className="shrink-0 whitespace-nowrap text-lg font-extrabold tabular-nums text-[#DFC286] sm:text-xl">
+            <span
+              data-dish-price="true"
+              className="shrink-0 whitespace-nowrap text-lg font-extrabold tabular-nums text-[#DFC286] sm:text-xl"
+            >
               {formatMenuPrice(item, locale)}
             </span>
           </div>
 
-          {/* Weight / Volume Pill + Combo Highlight */}
-          {(item.weight || (parsed.highlightBadge && !isAerosoli)) && (
+          {/* Weight / Volume Pill + Combo Highlight + Sold Out Today */}
+          {(item.weight ||
+            (parsed.highlightBadge && !isAerosoli) ||
+            ('isSoldOut' in item && item.isSoldOut)) && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
+              {'isSoldOut' in item && item.isSoldOut && (
+                <span className="rounded-full border border-rose-500/40 bg-rose-500/15 px-2.5 py-0.5 text-xs font-bold text-rose-300">
+                  {locale === 'fr'
+                    ? 'Épuisé aujourd’hui'
+                    : locale === 'nl'
+                      ? 'Vandaag uitverkocht'
+                      : locale === 'ro'
+                        ? 'Epuizat azi'
+                        : 'Sold out today'}
+                </span>
+              )}
               {item.weight && (
                 <span className="rounded-full border border-white/15 bg-[#070D17] px-2.5 py-0.5 text-xs font-semibold tabular-nums text-white/90">
                   {item.weight}
@@ -126,7 +145,10 @@ export function MenuDishCard({
 
           {/* Bespoke Wine-Included Pairing Visual Strip for Food Platters */}
           {item.type === 'food' && isAerosoli && (
-            <div className="mt-3 flex items-center gap-3 rounded-xl border border-[#C8A96A]/40 bg-gradient-to-r from-[#C8A96A]/15 via-[#070D17] to-[#070D17] px-3 py-2">
+            <div
+              data-aerosoli-strip="true"
+              className="mt-3 flex items-center gap-3 rounded-xl border border-[#C8A96A]/40 bg-gradient-to-r from-[#C8A96A]/15 via-[#070D17] to-[#070D17] px-3 py-2"
+            >
               <div className="relative h-12 w-10 shrink-0">
                 <Image
                   src="/images/aerosoli-wines-transparent.png"
@@ -180,7 +202,10 @@ export function MenuDishCard({
       </div>
 
       {/* Bottom Colorful EU Allergen Icons Row + Clear Tap-for-Details Hint */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/5 bg-[#070D17]/60 px-5 py-2.5">
+      <div
+        data-dish-allergen-bar="true"
+        className="flex flex-wrap items-center justify-between gap-2 border-t border-white/5 bg-[#070D17]/60 px-5 py-2.5"
+      >
         <div className="flex flex-wrap items-center gap-1.5">
           {normalizedAllergens.length > 0 ? (
             <>
@@ -365,7 +390,10 @@ export function MenuDishModal({
               >
                 {modalTrans.name}
               </h2>
-              <span className="shrink-0 whitespace-nowrap text-xl font-extrabold tabular-nums text-[#DFC286] sm:text-2xl">
+              <span
+                data-dish-price="true"
+                className="shrink-0 whitespace-nowrap text-xl font-extrabold tabular-nums text-[#DFC286] sm:text-2xl"
+              >
                 {formatMenuPrice(modalItem.item, locale)}
               </span>
             </div>

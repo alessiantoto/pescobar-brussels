@@ -31,6 +31,8 @@ export interface LocalizedMenuItem {
   name: string;
   description: string;
   nutrition?: string;
+  isSoldOut?: boolean;
+  chefNote?: string;
 }
 
 export type DishCardItem = LocalizedMenuItem | MenuItem;

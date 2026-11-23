@@ -48,7 +48,7 @@ export default async function MenuPage({
 }) {
   const { locale } = await params;
   const dict = getDictionary(locale);
-  const { categories, items } = getLocalizedMenuData(locale);
+  const { categories, items } = await getLocalizedMenuData(locale, 'site');
   const labels = getMenuExplorerLabels(dict);
   const menuJsonLd = buildMenuJsonLd(locale);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(locale, [

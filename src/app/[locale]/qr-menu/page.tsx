@@ -35,7 +35,7 @@ export default async function QrMenuPage({
 }) {
   const { locale } = await params;
   const dict = getDictionary(locale);
-  const { categories, items } = getLocalizedMenuData(locale);
+  const { categories, items } = await getLocalizedMenuData(locale, 'qr');
   const labels = getMenuExplorerLabels(dict);
 
   return (

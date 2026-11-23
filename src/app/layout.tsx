@@ -60,6 +60,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr-BE" className={`${jakarta.variable} dark`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('pescobar_theme')||'default';if(t&&t!=='default'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-[#070D17] font-sans text-white antialiased selection:bg-[#C8A96A] selection:text-[#070D17]">
         {children}
       </body>
