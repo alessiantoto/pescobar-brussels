@@ -7,7 +7,7 @@ import { isSupabaseConfigured, supabaseAdmin } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIpFromHeaders, rateLimiters } from '@/lib/ratelimit';
 import type { AdminRole, AdminSession } from '@/lib/admin/types';
 
-export const DEFAULT_ADMIN_EMAILS = [
+const DEFAULT_ADMIN_EMAILS = [
   'pescobarbrussels@gmail.com',
   'pescobarseafoodbrussels@gmail.com',
 ] as const;
