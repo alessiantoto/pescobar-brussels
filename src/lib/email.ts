@@ -17,6 +17,7 @@ export function getFromEmail(): string {
 export function getAlertEmail(): string {
   return (
     process.env.RESERVATION_ALERT_EMAIL?.trim() ||
+    SITE_CONFIG.email ||
     'pescobarbrussels@gmail.com'
   );
 }

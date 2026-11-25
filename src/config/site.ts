@@ -14,7 +14,9 @@ export const SITE_CONFIG = {
   legalName: 'Pescobar Seafood Brussels SRL',
   registeredOffice: 'Avenue Louise 209/A/7, 1050 Ixelles (Bruxelles), Belgique',
   rpmJurisdiction: 'RPM Bruxelles (Tribunal de l’entreprise francophone de Bruxelles)',
-  domain: 'https://pescobarseafoodbruxelles.be',
+  domain:
+    (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '') ||
+    'https://pescobarseafoodbrussels.be',
   phone: '+32 499 00 70 22',
   phoneRaw: '+32499007022',
   whatsappNumber: '32499007022',

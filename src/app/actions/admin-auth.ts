@@ -12,6 +12,16 @@ const DEFAULT_ADMIN_EMAILS = [
   'pescobarseafoodbrussels@gmail.com',
 ] as const;
 
+function isDefaultAdminEmail(email: string): boolean {
+  const clean = email.toLowerCase().trim();
+  if ((DEFAULT_ADMIN_EMAILS as readonly string[]).includes(clean)) return true;
+  const envAdmins = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  return envAdmins.includes(clean);
+}
+
 function normalizeRole(raw: unknown): AdminRole {
   if (raw === 'super_admin' || raw === 'staff') return raw;
   return 'admin';
@@ -46,9 +56,7 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     if (!user?.email) return null;
 
     const cleanEmail = user.email.toLowerCase().trim();
-    const isDefaultAdmin = DEFAULT_ADMIN_EMAILS.includes(
-      cleanEmail as (typeof DEFAULT_ADMIN_EMAILS)[number]
-    );
+    const isDefaultAdmin = isDefaultAdminEmail(cleanEmail);
 
     const { data: adminRow } = await supabaseAdmin
       .from('admin_users')
@@ -148,11 +156,7 @@ export async function verifyAdminEmail(email: string): Promise<{
     return { allowed: false };
   }
 
-  if (
-    DEFAULT_ADMIN_EMAILS.includes(
-      cleanEmail as (typeof DEFAULT_ADMIN_EMAILS)[number]
-    )
-  ) {
+  if (isDefaultAdminEmail(cleanEmail)) {
     return { allowed: true };
   }
 
