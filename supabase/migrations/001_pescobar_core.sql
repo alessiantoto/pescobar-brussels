@@ -196,10 +196,12 @@ end $$;
 grant usage, select on all sequences in schema public to service_role;
 
 -- ----------------------------------------------------------------------------
--- 7. First admin (EDIT the email, then run). Password is set in Supabase Auth:
+-- 7. Pre-approved admins. Password is set in Supabase Auth:
 --    Authentication > Users > Add user (email + password, auto-confirm).
 -- ----------------------------------------------------------------------------
--- insert into public.admin_users (email, full_name, role)
--- values ('owner@example.com', 'Owner', 'super_admin')
--- on conflict (email) do nothing;
+insert into public.admin_users (email, full_name, role)
+values 
+  ('pescobarbrussels@gmail.com', 'Pescobar Brussels Owner', 'super_admin'),
+  ('pescobarseafoodbrussels@gmail.com', 'Pescobar Seafood Brussels', 'super_admin')
+on conflict (email) do nothing;
 

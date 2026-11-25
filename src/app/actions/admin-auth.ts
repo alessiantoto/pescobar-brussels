@@ -7,6 +7,11 @@ import { isSupabaseConfigured, supabaseAdmin } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIpFromHeaders, rateLimiters } from '@/lib/ratelimit';
 import type { AdminRole, AdminSession } from '@/lib/admin/types';
 
+export const DEFAULT_ADMIN_EMAILS = [
+  'pescobarbrussels@gmail.com',
+  'pescobarseafoodbrussels@gmail.com',
+] as const;
+
 function normalizeRole(raw: unknown): AdminRole {
   if (raw === 'super_admin' || raw === 'staff') return raw;
   return 'admin';
@@ -22,9 +27,9 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     process.env.ALLOW_DEV_ADMIN_BYPASS === 'true'
   ) {
     return {
-      email: 'dev-preview@pescobar.local',
+      email: 'pescobarbrussels@gmail.com',
       role: 'super_admin',
-      fullName: 'Dev Preview',
+      fullName: 'Pescobar Brussels Owner',
     };
   }
 
@@ -41,13 +46,45 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     if (!user?.email) return null;
 
     const cleanEmail = user.email.toLowerCase().trim();
+    const isDefaultAdmin = DEFAULT_ADMIN_EMAILS.includes(
+      cleanEmail as (typeof DEFAULT_ADMIN_EMAILS)[number]
+    );
+
     const { data: adminRow } = await supabaseAdmin
       .from('admin_users')
       .select('id, email, full_name, role, is_active')
       .eq('email', cleanEmail)
       .maybeSingle();
 
-    if (!adminRow || adminRow.is_active === false) {
+    if (!adminRow) {
+      if (isDefaultAdmin) {
+        try {
+          await supabaseAdmin.from('admin_users').insert({
+            email: cleanEmail,
+            full_name:
+              cleanEmail === 'pescobarbrussels@gmail.com'
+                ? 'Pescobar Brussels Owner'
+                : 'Pescobar Seafood Brussels',
+            role: 'super_admin',
+            is_active: true,
+          });
+        } catch {
+          // ignore duplicate race
+        }
+
+        return {
+          email: cleanEmail,
+          role: 'super_admin',
+          fullName:
+            cleanEmail === 'pescobarbrussels@gmail.com'
+              ? 'Pescobar Brussels Owner'
+              : 'Pescobar Seafood Brussels',
+        };
+      }
+      return null;
+    }
+
+    if (adminRow.is_active === false) {
       return null;
     }
 
@@ -109,6 +146,14 @@ export async function verifyAdminEmail(email: string): Promise<{
   const cleanEmail = String(email || '').toLowerCase().trim().slice(0, 150);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
     return { allowed: false };
+  }
+
+  if (
+    DEFAULT_ADMIN_EMAILS.includes(
+      cleanEmail as (typeof DEFAULT_ADMIN_EMAILS)[number]
+    )
+  ) {
+    return { allowed: true };
   }
 
   const { data: adminRow } = await supabaseAdmin

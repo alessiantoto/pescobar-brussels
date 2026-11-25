@@ -370,6 +370,7 @@ export async function sendReservationEmail(data: ReservationEmailData): Promise<
         to: data.email,
         subject: titlesByLocale[locale],
         html: customerHtml,
+        replyTo: SITE_CONFIG.email,
       });
 
       if (custRes.error) {
@@ -518,6 +519,7 @@ export async function sendContactEmail(data: ContactEmailData): Promise<{
         to: data.email,
         subject: `Message reçu — Pescobar Seafood Bruxelles`,
         html: custHtml,
+        replyTo: SITE_CONFIG.email,
       });
 
       if (!custRes.error) {
@@ -672,6 +674,7 @@ export async function sendPrivateEventEmail(data: PrivateEventEmailData): Promis
         to: data.email,
         subject: `Votre demande d'événement chez Pescobar Seafood Bruxelles`,
         html: custHtml,
+        replyTo: SITE_CONFIG.email,
       });
 
       if (!custRes.error) {
@@ -738,6 +741,7 @@ export async function sendReservationStatusUpdateEmail(
       to: reservation.email,
       subject: title,
       html,
+      replyTo: SITE_CONFIG.email,
     });
 
     return !res.error;
