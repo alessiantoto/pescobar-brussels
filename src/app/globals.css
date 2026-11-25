@@ -9,16 +9,16 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #070D17;
+    background-color: #0b192c;
     color: #FFFFFF;
     font-size: 16px;
   }
 
   body {
-    background-color: #070D17;
+    background-color: #0b192c;
     background-image:
-      radial-gradient(circle at 20% 0%, rgba(200, 169, 106, 0.09), transparent 45%),
-      radial-gradient(circle at 80% 40%, rgba(16, 28, 48, 0.7), transparent 55%);
+      radial-gradient(circle at 20% 0%, rgba(200, 169, 106, 0.12), transparent 45%),
+      radial-gradient(circle at 80% 40%, rgba(14, 116, 144, 0.28), transparent 55%);
     color: #FFFFFF;
     font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
     line-height: 1.6;
@@ -83,22 +83,18 @@
 }
 
 /* ========================================================
-   THEME SYSTEM: 3 MODES
-   1. default: Midnight Obsidian (Nuit Sombre)
-   2. ocean: Bleu Marine Élégant (Haute Visibilité 40-50 ans · Pas Carrefour)
-   3. light: Perle Lumineux & Contours Bleus Élégants
+   THEME PERMANENT : BLEU OCÉAN (Haute Lisibilité 40-50 ans)
+   Bleu marine d'exception, élégant, zéro reflet, contrasté
    ======================================================== */
-
-/* --------------------------------------------------------
-   THEME 2: OCÉAN (Bleu Marine Élégant · 40-50 ans)
-   Deep luxury Mediterranean navy, no glare, high contrast
-   -------------------------------------------------------- */
-html[data-theme="ocean"] {
+html[data-theme="ocean"],
+html {
   color-scheme: dark;
 }
 
 html[data-theme="ocean"],
-html[data-theme="ocean"] body {
+html[data-theme="ocean"] body,
+html,
+body {
   background-color: #0b192c !important;
   background-image:
     radial-gradient(circle at 20% 0%, rgba(200, 169, 106, 0.12), transparent 45%),
@@ -106,397 +102,72 @@ html[data-theme="ocean"] body {
   color: #ffffff !important;
 }
 
-html[data-theme="ocean"] .bg-\[\#070D17\],
-html[data-theme="ocean"] .bg-\[\#070d17\],
-html[data-theme="ocean"] .bg-\[\#050911\],
-html[data-theme="ocean"] .bg-obsidian,
-html[data-theme="ocean"] .bg-navy-950,
-html[data-theme="ocean"] .bg-navy-900 {
+.bg-\[\#070D17\],
+.bg-\[\#070d17\],
+.bg-\[\#050911\],
+.bg-obsidian,
+.bg-navy-950,
+.bg-navy-900 {
   background-color: #0b192c !important;
 }
 
-html[data-theme="ocean"] .bg-\[\#070D17\]\/95,
-html[data-theme="ocean"] .bg-\[\#070d17\]\/95,
-html[data-theme="ocean"] header.sticky {
+.bg-\[\#070D17\]\/95,
+.bg-\[\#070d17\]\/95,
+header.sticky {
   background-color: rgba(11, 25, 44, 0.96) !important;
   border-color: rgba(56, 189, 248, 0.22) !important;
 }
 
-html[data-theme="ocean"] .bg-\[\#0C1524\],
-html[data-theme="ocean"] .bg-\[\#0c1524\],
-html[data-theme="ocean"] .bg-\[\#101C30\],
-html[data-theme="ocean"] .bg-\[\#101c30\],
-html[data-theme="ocean"] .bg-\[\#132238\],
-html[data-theme="ocean"] .bg-obsidian-surface,
-html[data-theme="ocean"] .bg-obsidian-elevated,
-html[data-theme="ocean"] .bg-navy-800,
-html[data-theme="ocean"] .bg-navy-700 {
+.bg-\[\#0C1524\],
+.bg-\[\#0c1524\],
+.bg-\[\#101C30\],
+.bg-\[\#101c30\],
+.bg-\[\#132238\],
+.bg-obsidian-surface,
+.bg-obsidian-elevated,
+.bg-navy-800,
+.bg-navy-700 {
   background-color: #122842 !important;
   border-color: rgba(56, 189, 248, 0.28) !important;
 }
 
-html[data-theme="ocean"] .border-white\/10,
-html[data-theme="ocean"] .border-white\/12,
-html[data-theme="ocean"] .border-white\/15,
-html[data-theme="ocean"] .border-white\/20,
-html[data-theme="ocean"] .border-white\/5 {
+.border-white\/10,
+.border-white\/12,
+.border-white\/15,
+.border-white\/20,
+.border-white\/5 {
   border-color: rgba(56, 189, 248, 0.24) !important;
 }
 
-html[data-theme="ocean"] .text-white\/60,
-html[data-theme="ocean"] .text-white\/65,
-html[data-theme="ocean"] .text-white\/70,
-html[data-theme="ocean"] .text-white\/75 {
+.text-white\/60,
+.text-white\/65,
+.text-white\/70,
+.text-white\/75 {
   color: #cbd5e1 !important;
 }
 
-html[data-theme="ocean"] input,
-html[data-theme="ocean"] textarea,
-html[data-theme="ocean"] select {
+input,
+textarea,
+select {
   background-color: #132a48 !important;
   border-color: rgba(56, 189, 248, 0.35) !important;
   color: #ffffff !important;
 }
 
 /* Category pills in Ocean Theme */
-html[data-theme="ocean"] [data-category-pill="true"][aria-pressed="false"],
-html[data-theme="ocean"] [data-category-back="true"] {
+[data-category-pill="true"][aria-pressed="false"],
+[data-category-back="true"] {
   background-color: #132a48 !important;
   border-color: rgba(56, 189, 248, 0.35) !important;
   color: #e2e8f0 !important;
 }
 
-html[data-theme="ocean"] [data-category-pill="true"][aria-pressed="true"] {
+[data-category-pill="true"][aria-pressed="true"] {
   background-color: #38bdf8 !important;
   border-color: #38bdf8 !important;
   color: #070d17 !important;
   font-weight: 800 !important;
 }
 
-/* --------------------------------------------------------
-   THEME 3: LIGHT / PERLE & CONTOURS BLEUS ÉLÉGANTS
-   Crisp light pearl theme with high contrast navy text and blue outlines
-   -------------------------------------------------------- */
-html[data-theme="light"] {
-  color-scheme: light;
-}
-
-html[data-theme="light"],
-html[data-theme="light"] body {
-  background-color: #f4f8fc !important;
-  background-image:
-    radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.05), transparent 45%),
-    radial-gradient(circle at 80% 40%, rgba(200, 169, 106, 0.08), transparent 55%) !important;
-  color: #0a192f !important;
-}
-
-/* Base Surfaces & Cards */
-html[data-theme="light"] .bg-\[\#070D17\],
-html[data-theme="light"] .bg-\[\#070d17\],
-html[data-theme="light"] .bg-\[\#050911\],
-html[data-theme="light"] .bg-obsidian,
-html[data-theme="light"] .bg-navy-950,
-html[data-theme="light"] .bg-navy-900 {
-  background-color: #f4f8fc !important;
-}
-
-html[data-theme="light"] .bg-\[\#070D17\]\/95,
-html[data-theme="light"] .bg-\[\#070d17\]\/95,
-html[data-theme="light"] header.sticky {
-  background-color: rgba(244, 248, 252, 0.96) !important;
-  border-color: rgba(30, 64, 175, 0.18) !important;
-}
-
-html[data-theme="light"] .bg-\[\#0C1524\],
-html[data-theme="light"] .bg-\[\#0c1524\],
-html[data-theme="light"] .bg-\[\#101C30\],
-html[data-theme="light"] .bg-\[\#101c30\],
-html[data-theme="light"] .bg-\[\#132238\],
-html[data-theme="light"] .bg-obsidian-surface,
-html[data-theme="light"] .bg-obsidian-elevated,
-html[data-theme="light"] .bg-navy-800,
-html[data-theme="light"] .bg-navy-700 {
-  background-color: #ffffff !important;
-  border-color: rgba(30, 64, 175, 0.22) !important; /* Contur albastru frumos */
-  box-shadow: 0 4px 20px -2px rgba(30, 64, 175, 0.08) !important;
-}
-
-html[data-theme="light"] .border-white\/10,
-html[data-theme="light"] .border-white\/12,
-html[data-theme="light"] .border-white\/15,
-html[data-theme="light"] .border-white\/20,
-html[data-theme="light"] .border-white\/5 {
-  border-color: rgba(30, 64, 175, 0.22) !important;
-}
-
-/* Base Typography on Light Surfaces */
-html[data-theme="light"] .text-white {
-  color: #0a192f !important;
-}
-
-html[data-theme="light"] .text-white\/95,
-html[data-theme="light"] .text-white\/90,
-html[data-theme="light"] .text-white\/85,
-html[data-theme="light"] .text-white\/80 {
-  color: #1e293b !important;
-}
-
-html[data-theme="light"] .text-white\/75,
-html[data-theme="light"] .text-white\/70,
-html[data-theme="light"] .text-white\/65,
-html[data-theme="light"] .text-white\/60,
-html[data-theme="light"] .text-white\/50,
-html[data-theme="light"] .text-slate-300,
-html[data-theme="light"] .text-slate-400,
-html[data-theme="light"] .text-\[\#D8E2F0\],
-html[data-theme="light"] .text-\[\#C8D4E6\],
-html[data-theme="light"] .text-\[\#B8C7DC\],
-html[data-theme="light"] .text-\[\#8FA1BC\] {
-  color: #334155 !important;
-}
-
-/* Logo icon fill */
-html[data-theme="light"] svg[aria-label="Pescobar Seafood Brussels"] g[fill="#FFFFFF"] {
-  fill: #0a192f !important;
-}
-
-/* Form Controls */
-html[data-theme="light"] input,
-html[data-theme="light"] textarea,
-html[data-theme="light"] select {
-  background-color: #ffffff !important;
-  border-color: rgba(30, 64, 175, 0.3) !important;
-  color: #0a192f !important;
-}
-
-html[data-theme="light"] input::placeholder,
-html[data-theme="light"] textarea::placeholder {
-  color: #64748b !important;
-}
-
-/* Modals & Dropdowns */
-html[data-theme="light"] .theme-dropdown-menu {
-  background-color: #ffffff !important;
-  border-color: rgba(30, 64, 175, 0.35) !important;
-  box-shadow: 0 10px 40px -4px rgba(30, 64, 175, 0.2) !important;
-}
-
-html[data-theme="light"] .theme-dropdown-menu .border-b {
-  border-color: rgba(30, 64, 175, 0.15) !important;
-  color: #64748b !important;
-}
-
-/* Gradients on Light Theme */
-html[data-theme="light"] .from-\[\#0C1524\] {
-  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
-}
-html[data-theme="light"] .to-\[\#0C1524\] {
-  --tw-gradient-to: #ffffff var(--tw-gradient-to-position) !important;
-}
-html[data-theme="light"] .from-\[\#070D17\] {
-  --tw-gradient-from: #f4f8fc var(--tw-gradient-from-position) !important;
-}
-
-/* ========================================================
-   CRITICAL OVERRIDES: PROTECT MEDIA OVERLAYS IN LIGHT MODE
-   Hero, Videos, and Photo Cards have dark visuals so their
-   overlaid text MUST REMAIN PURE CRISP WHITE!
-   ======================================================== */
-
-/* 1. HERO SECTION */
-html[data-theme="light"] [data-hero-section="true"] h1,
-html[data-theme="light"] [data-hero-section="true"] h1 span,
-html[data-theme="light"] section:first-of-type h1,
-html[data-theme="light"] section#hero h1 {
-  color: #ffffff !important;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95) !important;
-}
-
-html[data-theme="light"] [data-hero-section="true"] .hero-location-badge,
-html[data-theme="light"] section:first-of-type .hero-location-badge,
-html[data-theme="light"] section:first-of-type span.rounded-full {
-  background-color: rgba(7, 13, 23, 0.8) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  color: #ffffff !important;
-}
-html[data-theme="light"] section:first-of-type span.rounded-full span {
-  color: #ffffff !important;
-}
-
-html[data-theme="light"] [data-hero-section="true"] a.hero-secondary-btn,
-html[data-theme="light"] section:first-of-type a.hero-secondary-btn,
-html[data-theme="light"] section:first-of-type a:not(.bg-\[\#C8A96A\]) {
-  background-color: rgba(7, 13, 23, 0.75) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
-  color: #ffffff !important;
-}
-
-html[data-theme="light"] [data-hero-section="true"] .hero-tags-bar,
-html[data-theme="light"] section:first-of-type .hero-tags-bar,
-html[data-theme="light"] section:first-of-type div.backdrop-blur-md {
-  background-color: rgba(7, 13, 23, 0.85) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-}
-html[data-theme="light"] [data-hero-section="true"] .hero-tags-bar *,
-html[data-theme="light"] section:first-of-type .hero-tags-bar *,
-html[data-theme="light"] section:first-of-type div.backdrop-blur-md * {
-  color: #ffffff !important;
-}
-
-/* 2. VIDEO / TIKTOK REELS SECTION (AmbientClipCard 9:16) */
-html[data-theme="light"] [data-clip-card="true"] *,
-html[data-theme="light"] article[class*="aspect-\[9\/16\]"] * {
-  color: #ffffff !important;
-}
-html[data-theme="light"] [data-clip-card="true"] p:first-of-type,
-html[data-theme="light"] article[class*="aspect-\[9\/16\]"] p:first-of-type {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95) !important;
-}
-html[data-theme="light"] [data-clip-card="true"] p:last-of-type,
-html[data-theme="light"] article[class*="aspect-\[9\/16\]"] p:last-of-type {
-  color: rgba(255, 255, 255, 0.9) !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95) !important;
-}
-
-/* 3. HOMEPAGE CATEGORY CARDS (Section 3) & TWO OFFERS (Section 4) */
-html[data-theme="light"] [data-media-card="true"] h3,
-html[data-theme="light"] [data-media-card="true"] span.font-extrabold,
-html[data-theme="light"] a[class*="aspect-\[4\/3\]"] span.font-extrabold {
-  color: #ffffff !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95) !important;
-}
-html[data-theme="light"] .home-offer-card h3,
-html[data-theme="light"] .home-offer-card p {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* 4. MENU EXPLORER: TABS & CATEGORY PILLS */
-html[data-theme="light"] [data-menu-tablist="true"] {
-  background-color: #ffffff !important;
-  border-bottom: 2px solid rgba(30, 64, 175, 0.18) !important;
-}
-html[data-theme="light"] [data-menu-tablist="true"] button[aria-selected="true"] {
-  color: #0a192f !important;
-  font-weight: 800 !important;
-}
-html[data-theme="light"] [data-menu-tablist="true"] button[aria-selected="true"] span:last-child {
-  background-color: #1e40af !important;
-  height: 3px !important;
-}
-html[data-theme="light"] [data-menu-tablist="true"] button[aria-selected="false"] {
-  color: #475569 !important;
-  font-weight: 600 !important;
-}
-
-html[data-theme="light"] [data-category-back="true"] {
-  background-color: #ffffff !important;
-  border: 1.5px solid rgba(30, 64, 175, 0.3) !important;
-  color: #0a192f !important;
-}
-html[data-theme="light"] [data-category-back="true"]:hover {
-  background-color: #eff6ff !important;
-}
-
-html[data-theme="light"] [data-category-pill="true"][aria-pressed="false"] {
-  background-color: #ffffff !important;
-  border: 1.5px solid rgba(30, 64, 175, 0.22) !important;
-  color: #0a192f !important;
-  font-weight: 700 !important;
-}
-html[data-theme="light"] [data-category-pill="true"][aria-pressed="false"]:hover {
-  background-color: #f8fafc !important;
-  border-color: rgba(30, 64, 175, 0.45) !important;
-}
-html[data-theme="light"] [data-category-pill="true"][aria-pressed="true"] {
-  background-color: #0a192f !important;
-  border-color: #0a192f !important;
-  color: #ffffff !important;
-  font-weight: 800 !important;
-}
-
-/* Category Photo Cards Grid (View 1) */
-html[data-theme="light"] [data-category-photo-card="true"] h2,
-html[data-theme="light"] [data-category-photo-card="true"] p {
-  color: #ffffff !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95) !important;
-}
-html[data-theme="light"] [data-category-photo-card="true"] svg {
-  color: #ffffff !important;
-}
-
-/* Category Detail Banner Header */
-html[data-theme="light"] [data-category-detail-header="true"] h2 {
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* 5. DISH CARDS: PRICES, PROMO STRIPS & ALLERGEN BAR */
-html[data-theme="light"] [data-dish-price="true"],
-html[data-theme="light"] article[data-dish-card="true"] span.tabular-nums.text-\[\#DFC286\] {
-  color: #996515 !important; /* Rich deep bronze gold, high contrast AAA */
-  font-weight: 900 !important;
-}
-
-html[data-theme="light"] [data-aerosoli-strip="true"] {
-  background: linear-gradient(135deg, rgba(200, 169, 106, 0.16) 0%, #eff6ff 100%) !important;
-  border: 1.5px solid rgba(200, 169, 106, 0.45) !important;
-}
-html[data-theme="light"] [data-aerosoli-strip="true"] p:first-of-type {
-  color: #78350f !important;
-  font-weight: 800 !important;
-}
-html[data-theme="light"] [data-aerosoli-strip="true"] p:last-of-type {
-  color: #1e293b !important;
-  font-weight: 500 !important;
-}
-
-html[data-theme="light"] [data-dish-allergen-bar="true"] {
-  background-color: #f8fafc !important;
-  border-top: 1px solid rgba(30, 64, 175, 0.15) !important;
-}
-html[data-theme="light"] [data-dish-allergen-bar="true"] span {
-  color: #475569 !important;
-}
-html[data-theme="light"] [data-dish-allergen-bar="true"] span.text-\[\#DFC286\],
-html[data-theme="light"] [data-dish-allergen-bar="true"] span[aria-hidden="true"] {
-  color: #1e40af !important;
-  font-weight: 700 !important;
-}
-
-/* Zoom button on Dish Card */
-html[data-theme="light"] article[data-dish-card="true"] span[aria-hidden="true"].absolute.right-3 {
-  background-color: rgba(0, 0, 0, 0.75) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-}
-
-/* Modal Close Button */
-html[data-theme="light"] div[role="dialog"] button.sticky.top-3 {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-/* 6. FOOTER: PRESERVE LUXURY MIDNIGHT OBSIDIAN FOUNDATION */
-html[data-theme="light"] footer {
-  background-color: #050911 !important;
-  border-color: rgba(200, 169, 106, 0.25) !important;
-}
-html[data-theme="light"] footer * {
-  color: #C8D4E6;
-}
-html[data-theme="light"] footer h3,
-html[data-theme="light"] footer a:hover,
-html[data-theme="light"] footer .text-\[\#C8A96A\] {
-  color: #C8A96A !important;
-}
-html[data-theme="light"] footer .text-white {
-  color: #ffffff !important;
-}
-html[data-theme="light"] footer .text-\[\#8FA1BC\] {
-  color: #8FA1BC !important;
-}
 
 

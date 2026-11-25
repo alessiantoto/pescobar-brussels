@@ -18,7 +18,6 @@ import {
 import { SITE_CONFIG, type Locale } from '@/config/site';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { LanguageDropdown } from '@/components/LanguageDropdown';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { PescobarBrandLogo } from '@/components/PescobarBrandLogo';
 import {
   DELIVERY_PLATFORMS,
@@ -227,7 +226,6 @@ export function Navbar({ locale, dict }: NavbarProps) {
 
         {/* Right: Clean Uncrowded Control Cluster */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2 xl:gap-2.5">
-          <ThemeToggle locale={locale} />
           <LanguageDropdown locale={locale} />
 
           <Link
@@ -259,9 +257,6 @@ export function Navbar({ locale, dict }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="fixed inset-x-0 top-16 bottom-0 z-[60] overflow-y-auto border-t border-[#C8A96A]/20 bg-[#070D17] px-4 pt-3 pb-5 sm:top-20 lg:hidden">
           <div className="mx-auto flex max-w-md flex-col gap-3">
-            {/* Theme & Contrast Selector for 40-50+ accessibility */}
-            <ThemeToggle locale={locale} variant="drawer" />
-
             {/* 1. Primary 2-Card Action Grid (Menu & Reserve) */}
             <div className="grid grid-cols-2 gap-2.5">
               <Link
