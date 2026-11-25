@@ -10,6 +10,8 @@ import type {
   ReservationZone,
 } from '@/lib/reservations-contract';
 import { isSupabaseConfigured, supabaseAdmin } from '@/lib/supabase/admin';
+import { sendReservationEmail } from '@/lib/email';
+import type { Locale } from '@/config/site';
 
 const VALID_ZONES: ReservationZone[] = ['main', 'window_terrace', 'lounge'];
 const VALID_LOCALES = ['fr', 'nl', 'en', 'ro'] as const;
@@ -79,11 +81,32 @@ export async function POST(request: Request) {
     );
   }
 
+  const emailPayload = {
+    reservationDate,
+    reservationTime,
+    service,
+    partySize,
+    zone,
+    firstName,
+    lastName,
+    phone,
+    email,
+    occasion,
+    notes,
+    locale: locale as Locale,
+  };
+
   if (!isSupabaseConfigured()) {
+    const emailResult = await sendReservationEmail(emailPayload).catch((err) => {
+      console.error('[API reservations] Email dispatch failed:', err);
+      return { adminSent: false, customerSent: false };
+    });
+
     return NextResponse.json({
       ok: true,
       savedToDb: false,
-      message: 'Supabase not configured yet; WhatsApp/email flow continues.',
+      emailSent: emailResult.adminSent,
+      message: 'Supabase not configured yet; email notification dispatched.',
     });
   }
 
@@ -116,6 +139,19 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, savedToDb: true, id: data?.id ?? null });
+  const emailResult = await sendReservationEmail({
+    ...emailPayload,
+    id: data?.id,
+  }).catch((err) => {
+    console.error('[API reservations] Email dispatch failed:', err);
+    return { adminSent: false, customerSent: false };
+  });
+
+  return NextResponse.json({
+    ok: true,
+    savedToDb: true,
+    id: data?.id ?? null,
+    emailSent: emailResult.adminSent,
+  });
 }
 

@@ -155,6 +155,23 @@ export function ContactWizard({
       return;
     }
     setShowErrors(false);
+
+    // Send email notification to restaurant and confirmation to customer
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'contact',
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        email: email.trim(),
+        phone: phone.trim() || null,
+        subject: subject || 'Contact',
+        message: message.trim(),
+        locale,
+      }),
+    }).catch(() => {});
+
     setStep(2);
   };
 

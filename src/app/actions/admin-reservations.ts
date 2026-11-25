@@ -11,6 +11,7 @@ import {
   type ReservationStatus,
 } from '@/lib/reservations-contract';
 import { isSupabaseConfigured, supabaseAdmin } from '@/lib/supabase/admin';
+import { sendReservationStatusUpdateEmail } from '@/lib/email';
 
 export async function adminUpdateReservationStatus(
   id: string,
@@ -33,12 +34,18 @@ export async function adminUpdateReservationStatus(
     updateData.confirmed_at = new Date().toISOString();
   }
 
-  const { error } = await supabaseAdmin
+  const { data: updatedRow, error } = await supabaseAdmin
     .from('reservations')
     .update(updateData)
-    .eq('id', id);
+    .eq('id', id)
+    .select('first_name, last_name, email, reservation_date, reservation_time, party_size, locale')
+    .maybeSingle();
 
   if (error) return fail(`Eroare DB: ${error.message}`);
+
+  if (updatedRow?.email) {
+    sendReservationStatusUpdateEmail(updatedRow as any, status).catch(() => {});
+  }
 
   await writeAuditLog({
     actorEmail: session.email,

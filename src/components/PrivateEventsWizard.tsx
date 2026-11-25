@@ -308,6 +308,26 @@ export function PrivateEventsWizard({
       return;
     }
     setShowStep2Errors(false);
+
+    // Send private event notification to restaurant and receipt to customer
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'private_event',
+        event_type: eventType,
+        event_date: date || null,
+        guests_count: guests || null,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        company: company.trim() || null,
+        email: email.trim() || null,
+        phone: phone.trim(),
+        message: message.trim() || null,
+        locale,
+      }),
+    }).catch(() => {});
+
     goToStep(3);
   };
 

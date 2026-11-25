@@ -90,6 +90,8 @@ interface WizardCopy {
   lastNamePlaceholder: string;
   phoneLabel: string;
   phonePlaceholder: string;
+  emailLabel: string;
+  emailPlaceholder: string;
   occasionLabel: string;
   occasionPlaceholder: string;
   messageLabel: string;
@@ -154,6 +156,8 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
     lastNamePlaceholder: 'Ex. Martin',
     phoneLabel: 'Téléphone mobile *',
     phonePlaceholder: '+32 499 00 00 00',
+    emailLabel: 'E-mail (pour confirmation)',
+    emailPlaceholder: 'jean.dupont@example.com',
     occasionLabel: 'Occasion (optionnel)',
     occasionPlaceholder: 'Ex : Anniversaire, dîner d’affaires...',
     messageLabel: 'Remarques (optionnel)',
@@ -218,6 +222,8 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
     lastNamePlaceholder: 'Bijv. Peeters',
     phoneLabel: 'Mobiel telefoonnummer *',
     phonePlaceholder: '+32 499 00 00 00',
+    emailLabel: 'E-mail (voor bevestiging)',
+    emailPlaceholder: 'jan.peeters@example.com',
     occasionLabel: 'Gelegenheid (optioneel)',
     occasionPlaceholder: 'Bijv. Verjaardag, zakendiner...',
     messageLabel: 'Opmerkingen (optioneel)',
@@ -282,6 +288,8 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
     lastNamePlaceholder: 'e.g. Sterling',
     phoneLabel: 'Mobile Phone *',
     phonePlaceholder: '+32 499 00 00 00',
+    emailLabel: 'Email (for confirmation)',
+    emailPlaceholder: 'alexander@example.com',
     occasionLabel: 'Occasion (optional)',
     occasionPlaceholder: 'e.g. Birthday, business dinner...',
     messageLabel: 'Special requests (optional)',
@@ -346,6 +354,8 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
     lastNamePlaceholder: 'Ex. Popescu',
     phoneLabel: 'Telefon mobil *',
     phonePlaceholder: '+32 499 00 00 00',
+    emailLabel: 'Email (pentru confirmare)',
+    emailPlaceholder: 'alexandru.popescu@example.com',
     occasionLabel: 'Ocazie (opțional)',
     occasionPlaceholder: 'Ex: Aniversare, cină de afaceri...',
     messageLabel: 'Observații (opțional)',
@@ -419,6 +429,7 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [occasion, setOccasion] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
   const [showStep3Errors, setShowStep3Errors] = useState<boolean>(false);
@@ -493,6 +504,7 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         phone: phone.trim(),
+        email: email.trim() || null,
         occasion: occasionDisplay || null,
         notes: notes.trim() || null,
         locale,
@@ -511,6 +523,7 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
       `• ${dict.reservationForm.zoneLabel}: ${zoneDisplay}`,
       fullName ? `• ${copy.passContactLabel}: ${fullName}` : '',
       phone ? `• ${dict.reservationForm.phoneLabel}: ${phone}` : '',
+      email.trim() ? `• E-mail: ${email.trim()}` : '',
       occasionDisplay ? `• ${copy.passOccasionLabel}: ${occasionDisplay}` : '',
       notes.trim() ? `• ${copy.passMessageLabel}: ${notes.trim()}` : '',
     ]
@@ -1037,20 +1050,37 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
 
             <div>
               <label
-                htmlFor="res-occasion"
+                htmlFor="res-email"
                 className="mb-1.5 block text-xs font-bold tracking-[0.12em] uppercase text-[#B8C7DC]"
               >
-                {copy.occasionLabel}
+                {copy.emailLabel}
               </label>
               <input
-                id="res-occasion"
-                type="text"
-                value={occasion}
-                onChange={(e) => setOccasion(e.target.value)}
-                placeholder={copy.occasionPlaceholder}
+                id="res-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={copy.emailPlaceholder}
                 className="h-11 w-full rounded-xl border border-white/15 bg-[#070D17] px-3.5 text-sm text-white placeholder:text-white/30 transition-colors focus:border-[#C8A96A] focus:outline-none sm:h-12 sm:px-4"
               />
             </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="res-occasion"
+              className="mb-1.5 block text-xs font-bold tracking-[0.12em] uppercase text-[#B8C7DC]"
+            >
+              {copy.occasionLabel}
+            </label>
+            <input
+              id="res-occasion"
+              type="text"
+              value={occasion}
+              onChange={(e) => setOccasion(e.target.value)}
+              placeholder={copy.occasionPlaceholder}
+              className="h-11 w-full rounded-xl border border-white/15 bg-[#070D17] px-3.5 text-sm text-white placeholder:text-white/30 transition-colors focus:border-[#C8A96A] focus:outline-none sm:h-12 sm:px-4"
+            />
           </div>
 
           {/* Concise Special Requests Note */}
@@ -1170,6 +1200,11 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
                   {phone && (
                     <span className="tabular-nums text-[#DFC286]">
                       • {phone}
+                    </span>
+                  )}
+                  {email && (
+                    <span className="block text-[11px] text-[#8E9EB5] mt-0.5">
+                      {email}
                     </span>
                   )}
                 </p>
