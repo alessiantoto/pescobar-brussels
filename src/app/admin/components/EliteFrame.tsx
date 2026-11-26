@@ -220,48 +220,9 @@ export default function EliteFrame({
           </div>
         )}
 
-        <main className="flex-1 px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-8">
+        <main className="flex-1 px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
-
-        {/* Mobile iOS-style Bottom Bar */}
-        <nav
-          aria-label="Navigare rapidă mobil"
-          className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0B1526]/95 backdrop-blur-md border-t border-white/10 px-2 py-1.5 flex items-center justify-around shadow-2xl"
-        >
-          {[
-            { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-            { name: 'Rezervări', path: '/admin/reservations', icon: CalendarClock },
-            { name: 'Meniu', path: '/admin/dishes', icon: UtensilsCrossed },
-            { name: 'Clienți', path: '/admin/clients', icon: Users },
-            { name: 'Mesaje', path: '/admin/messages', icon: MessageSquare },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const active = isAdminNavPathActive(pathname, tab.path);
-            return (
-              <Link
-                key={tab.path}
-                href={tab.path}
-                className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] ${
-                  active
-                    ? 'text-[#DFC286] font-bold'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <div
-                  className={`p-1 rounded-lg transition ${
-                    active ? 'bg-[#DFC286]/15' : ''
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] tracking-tight mt-0.5">
-                  {tab.name}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
       </div>
     </div>
   );
