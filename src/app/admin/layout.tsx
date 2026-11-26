@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
+  manifest: '/admin/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    title: 'Pescobar Admin',
+    statusBarStyle: 'black-translucent',
+  },
 };
 
 export default async function AdminLayout({
