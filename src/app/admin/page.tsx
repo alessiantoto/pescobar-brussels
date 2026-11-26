@@ -88,10 +88,10 @@ export default async function AdminDashboardPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/admin/clients"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm font-bold transition shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] text-xs sm:text-sm font-extrabold transition shadow-sm"
           >
             <Send className="w-4 h-4" />
-            Trimite Email
+            Trimite Email Reclamă
           </Link>
           <Link
             href="/admin/dishes/new"
@@ -215,7 +215,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center gap-2">
               <Link
                 href="/admin/reservations"
-                className="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition"
+                className="text-xs font-bold text-[#0B192C] bg-[#DFC286]/25 hover:bg-[#DFC286]/40 border border-[#DFC286]/50 px-3 py-1.5 rounded-lg transition"
               >
                 Vezi toate rezervările →
               </Link>
@@ -272,24 +272,24 @@ export default async function AdminDashboardPage() {
             <div className="space-y-2.5">
               <Link
                 href="/admin/reservations"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-amber-50 hover:bg-amber-100/70 border border-amber-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-slate-50 hover:bg-[#0B192C]/5 border border-slate-200 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
-                  <CalendarClock className="w-4 h-4 text-amber-600" />
+                  <CalendarClock className="w-4 h-4 text-[#C8A96A]" />
                   Gestionare Rezervări & Mese
                 </span>
-                <span className="text-[11px] text-amber-700 font-semibold">Deschide →</span>
+                <span className="text-[11px] text-[#C8A96A] font-bold">Deschide →</span>
               </Link>
 
               <Link
                 href="/admin/clients"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-blue-50 hover:bg-blue-100/70 border border-blue-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-[#0B192C]/5 hover:bg-[#0B192C]/10 border border-[#DFC286]/30 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-blue-600" />
-                  Trimite Email în Masă la Clienți
+                  <Mail className="w-4 h-4 text-[#C8A96A]" />
+                  Trimite Reclamă & Email în Masă
                 </span>
-                <span className="text-[11px] text-blue-700 font-semibold">Marketing →</span>
+                <span className="text-[11px] text-[#0B192C] font-extrabold">Marketing →</span>
               </Link>
 
               <Link
@@ -340,7 +340,7 @@ export default async function AdminDashboardPage() {
             ) : (
               <ul className="space-y-2.5">
                 {auditLogs.map((log) => (
-                  <li key={log.id} className="text-xs border-l-2 border-amber-400 pl-2.5">
+                  <li key={log.id} className="text-xs border-l-2 border-[#DFC286] pl-2.5">
                     <p className="font-medium text-slate-800">{log.summary}</p>
                     <p className="text-[11px] text-slate-400">
                       {log.actor_email} ·{' '}

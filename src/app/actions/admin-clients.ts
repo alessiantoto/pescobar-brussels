@@ -167,12 +167,12 @@ export async function sendAdminMassEmail({
     .split('\n\n')
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6; color: #334155;">${p.replace(/\n/g, '<br/>')}</p>`)
+    .map((p) => `<p style="margin: 0 0 16px; font-size: 15px; line-height: 1.7; color: #E2E8F0;">${p.replace(/\n/g, '<br/>')}</p>`)
     .join('');
 
   const ctaButtonHtml = buttonText && buttonUrl ? `
-    <div style="text-align: center; margin: 32px 0 24px;">
-      <a href="${buttonUrl}" style="display: inline-block; background-color: #B9975B; color: #0B192C; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 12px rgba(185,151,91,0.3);">
+    <div style="text-align: center; margin: 36px 0 24px;">
+      <a href="${buttonUrl}" style="display: inline-block; background: linear-gradient(135deg, #C8A96A 0%, #DFC286 50%, #C8A96A 100%); color: #0B192C; font-weight: 800; font-size: 15px; padding: 15px 36px; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 16px rgba(200, 169, 106, 0.35); text-transform: uppercase; letter-spacing: 0.5px;">
         ${buttonText}
       </a>
     </div>
@@ -183,40 +183,61 @@ export async function sendAdminMassEmail({
 <html lang="ro">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${subject}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F8FAFC; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F8FAFC; padding: 40px 16px;">
+<body style="margin: 0; padding: 0; background-color: #07101C; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #07101C; padding: 40px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 600px; background-color: #0B192C; border-radius: 16px 16px 0 0; text-align: center; padding: 36px 24px;">
+        <!-- Main Card -->
+        <table role="presentation" width="100%" style="max-width: 600px; background-color: #0B192C; border-radius: 20px; border: 1px solid rgba(223, 194, 134, 0.3); overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.4);">
+          <!-- Header -->
           <tr>
-            <td>
-              <h1 style="margin: 0; color: #FFFFFF; font-size: 24px; font-weight: 800; letter-spacing: 2px;">
+            <td style="padding: 40px 32px 28px; text-align: center; background: radial-gradient(circle at 50% 0%, rgba(223, 194, 134, 0.15) 0%, transparent 70%); border-bottom: 1px solid rgba(255,255,255,0.08);">
+              <h1 style="margin: 0; color: #FFFFFF; font-size: 26px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;">
                 PESCOBAR
               </h1>
-              <p style="margin: 6px 0 0; color: #B9975B; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;">
+              <p style="margin: 6px 0 0; color: #DFC286; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">
                 Seafood Restaurant · Bruxelles
               </p>
+              <div style="height: 1px; width: 60px; background-color: #DFC286; margin: 18px auto 0; opacity: 0.6;"></div>
             </td>
           </tr>
-        </table>
-        <table role="presentation" width="100%" style="max-width: 600px; background-color: #FFFFFF; border-radius: 0 0 16px 16px; border: 1px solid #E2E8F0; border-top: none; padding: 36px 32px;">
+
+          <!-- Body -->
           <tr>
-            <td>
-              <h2 style="margin: 0 0 20px; color: #0B192C; font-size: 20px; font-weight: 700;">
+            <td style="padding: 36px 32px 28px; background-color: #0B192C;">
+              <h2 style="margin: 0 0 22px; color: #DFC286; font-size: 21px; font-weight: 700; line-height: 1.35; letter-spacing: 0.2px;">
                 ${subject}
               </h2>
               ${paragraphs}
               ${ctaButtonHtml}
-              <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 32px 0 24px;" />
-              <table role="presentation" width="100%">
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 32px 32px; background-color: #07101C; border-top: 1px solid rgba(255,255,255,0.08); text-align: center;">
+              <p style="margin: 0 0 8px; color: #FFFFFF; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;">
+                Pescobar Seafood Restaurant Bruxelles
+              </p>
+              <p style="margin: 0 0 16px; color: #94A3B8; font-size: 12px; line-height: 1.6;">
+                Quai aux Briques 46, 1000 Bruxelles (Sainte-Catherine)<br/>
+                Telefon & WhatsApp: <a href="tel:+32499007022" style="color: #DFC286; text-decoration: none; font-weight: 600;">+32 499 00 70 22</a>
+              </p>
+              <table role="presentation" align="center" style="margin: 0 auto;">
                 <tr>
-                  <td style="color: #64748B; font-size: 12px; line-height: 1.5;">
-                    <strong style="color: #0B192C;">Pescobar Seafood Restaurant Bruxelles</strong><br/>
-                    Quai aux Briques 46, 1000 Bruxelles<br/>
-                    Telefon / WhatsApp: +32 499 00 70 22<br/>
-                    <a href="https://pescobarseafoodbrussels.be" style="color: #B9975B; text-decoration: none;">pescobarseafoodbrussels.be</a>
+                  <td style="padding: 0 8px;">
+                    <a href="https://pescobarseafoodbrussels.be/ro/menu" style="color: #DFC286; font-size: 12px; text-decoration: none; font-weight: 600;">Meniu Online</a>
+                  </td>
+                  <td style="color: #64748B;">•</td>
+                  <td style="padding: 0 8px;">
+                    <a href="https://pescobarseafoodbrussels.be/ro/rezervare" style="color: #DFC286; font-size: 12px; text-decoration: none; font-weight: 600;">Rezervare Masă</a>
+                  </td>
+                  <td style="color: #64748B;">•</td>
+                  <td style="padding: 0 8px;">
+                    <a href="https://pescobarseafoodbrussels.be" style="color: #DFC286; font-size: 12px; text-decoration: none; font-weight: 600;">pescobarseafoodbrussels.be</a>
                   </td>
                 </tr>
               </table>

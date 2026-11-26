@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { sendAdminMassEmail, type AdminClientItem } from '@/app/actions/admin-clients';
+import { PescobarBrandLogo } from '@/components/PescobarBrandLogo';
 
 interface Props {
   initialClients: AdminClientItem[];
@@ -192,7 +193,7 @@ export default function ClientsClient({ initialClients }: Props) {
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Total Clienți Unici
             </span>
-            <Users className="w-5 h-5 text-amber-500" />
+            <Users className="w-5 h-5 text-[#C8A96A]" />
           </div>
           <p className="mt-2 text-2xl font-bold text-slate-900">{clients.length}</p>
           <p className="mt-1 text-xs text-slate-500">
@@ -220,7 +221,7 @@ export default function ClientsClient({ initialClients }: Props) {
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Clienți Fideli (2+ Mese)
             </span>
-            <Sparkles className="w-5 h-5 text-blue-600" />
+            <Sparkles className="w-5 h-5 text-[#C8A96A]" />
           </div>
           <p className="mt-2 text-2xl font-bold text-slate-900">
             {clients.filter((c) => c.reservationsCount >= 2).length}
@@ -242,7 +243,7 @@ export default function ClientsClient({ initialClients }: Props) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Caută după nume, email sau telefon..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#C8A96A]"
             />
           </div>
 
@@ -253,7 +254,7 @@ export default function ClientsClient({ initialClients }: Props) {
               onClick={() => setFilterType('all')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'all'
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -264,7 +265,7 @@ export default function ClientsClient({ initialClients }: Props) {
               onClick={() => setFilterType('repeat')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'repeat'
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -275,7 +276,7 @@ export default function ClientsClient({ initialClients }: Props) {
               onClick={() => setFilterType('with_phone')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'with_phone'
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -294,7 +295,7 @@ export default function ClientsClient({ initialClients }: Props) {
             >
               {isAllSelected ? (
                 <>
-                  <CheckSquare className="w-4 h-4 text-amber-600" />
+                  <CheckSquare className="w-4 h-4 text-[#C8A96A]" />
                   Deselectează toți ({filteredClients.length})
                 </>
               ) : (
@@ -306,7 +307,7 @@ export default function ClientsClient({ initialClients }: Props) {
             </button>
 
             {selectedEmails.size > 0 && (
-              <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg">
+              <span className="text-xs font-bold text-[#0B192C] bg-[#DFC286]/25 border border-[#DFC286]/50 px-2.5 py-1 rounded-lg">
                 {selectedEmails.size} selectați
               </span>
             )}
@@ -331,7 +332,7 @@ export default function ClientsClient({ initialClients }: Props) {
                 }
                 setIsModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold shadow-sm transition"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] text-xs font-extrabold shadow-sm transition"
             >
               <Mail className="w-4 h-4" />
               Trimite Email în Masă ({selectedEmails.size > 0 ? selectedEmails.size : filteredClients.length})
@@ -359,7 +360,9 @@ export default function ClientsClient({ initialClients }: Props) {
                   key={c.email}
                   onClick={() => toggleSelectOne(c.email)}
                   className={`p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition ${
-                    isSelected ? 'bg-amber-50/50 hover:bg-amber-50' : 'hover:bg-slate-50'
+                    isSelected
+                      ? 'bg-[#0B192C]/5 border-l-4 border-[#C8A96A]'
+                      : 'hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -369,7 +372,7 @@ export default function ClientsClient({ initialClients }: Props) {
                       className="shrink-0 text-slate-400"
                     >
                       {isSelected ? (
-                        <CheckSquare className="w-5 h-5 text-amber-600" />
+                        <CheckSquare className="w-5 h-5 text-[#C8A96A]" />
                       ) : (
                         <Square className="w-5 h-5 text-slate-300" />
                       )}
@@ -381,7 +384,7 @@ export default function ClientsClient({ initialClients }: Props) {
                           {c.fullName}
                         </span>
                         {c.reservationsCount >= 2 && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30">
                             Fidel ({c.reservationsCount} mese)
                           </span>
                         )}
@@ -418,9 +421,9 @@ export default function ClientsClient({ initialClients }: Props) {
                         setSelectedEmails(new Set([c.email]));
                         setIsModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-[#0B192C]/5 text-xs font-semibold text-slate-700 transition"
                     >
-                      <Mail className="w-3.5 h-3.5 text-slate-500" />
+                      <Mail className="w-3.5 h-3.5 text-[#C8A96A]" />
                       Email direct
                     </button>
                     {c.phone && (
@@ -444,131 +447,136 @@ export default function ClientsClient({ initialClients }: Props) {
 
       {/* Email Composer Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Trimite Email în Masă (Marketing)
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Destinatari: <strong>{selectedEmails.size} clienți selectați</strong> · Trimis via Resend
-                </p>
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-slate-200 shadow-2xl space-y-0 animate-in fade-in zoom-in-95 overflow-hidden">
+            {/* Luxury Midnight Header */}
+            <div className="bg-[#0B192C] px-6 py-5 border-b border-white/10 flex items-center justify-between text-white">
+              <div className="flex items-center gap-3">
+                <PescobarBrandLogo size="nav" className="!h-8 w-auto shrink-0" />
+                <div>
+                  <h3 className="text-base font-bold text-white tracking-wide">
+                    Campanie Reclamă & Email Marketing
+                  </h3>
+                  <p className="text-xs text-[#DFC286] mt-0.5 font-medium">
+                    {selectedEmails.size} clienți selectați · Trimitere instantă prin Vercel & Resend
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700"
+                className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Template Selector */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Alege un model rapid (Opțional)
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {TEMPLATES.map((tpl) => (
-                  <button
-                    key={tpl.name}
-                    type="button"
-                    onClick={() => handleApplyTemplate(tpl)}
-                    className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-left transition"
-                  >
-                    <p className="text-xs font-bold text-slate-900 truncate">{tpl.name}</p>
-                    <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{tpl.subject}</p>
-                  </button>
-                ))}
+            <div className="p-6 space-y-5">
+              {/* Template Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Alege un model de reclamă rapid (Opțional)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {TEMPLATES.map((tpl) => (
+                    <button
+                      key={tpl.name}
+                      type="button"
+                      onClick={() => handleApplyTemplate(tpl)}
+                      className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#0B192C]/5 hover:border-[#C8A96A] text-left transition"
+                    >
+                      <p className="text-xs font-bold text-slate-900 truncate">{tpl.name}</p>
+                      <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{tpl.subject}</p>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Subject */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Subiect Email *
-              </label>
-              <input
-                type="text"
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-                placeholder="ex: Noutăți delicioase de sezon la Pescobar Bruxelles"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:border-amber-500"
-              />
-            </div>
-
-            {/* Body */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Mesaj * (Formatare liberă cu paragrafe)
-              </label>
-              <textarea
-                rows={6}
-                value={emailBody}
-                onChange={(e) => setEmailBody(e.target.value)}
-                placeholder="Scrieți mesajul promoțional sau de mulțumire aici..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-amber-500 font-sans"
-              />
-            </div>
-
-            {/* CTA Button config */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-600">
-                  Text Buton Acțiune (Opțional)
+              {/* Subject */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Subiect Email Reclamă *
                 </label>
                 <input
                   type="text"
-                  value={buttonText}
-                  onChange={(e) => setButtonText(e.target.value)}
-                  placeholder="ex: Rezervă o masă acum"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  placeholder="ex: Noutăți delicioase de sezon la Pescobar Bruxelles"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#C8A96A]"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-600">
-                  Link Buton Acțiune
+
+              {/* Body */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Mesaj Reclamă / Promoție * (Formatare liberă cu paragrafe)
                 </label>
-                <input
-                  type="text"
-                  value={buttonUrl}
-                  onChange={(e) => setButtonUrl(e.target.value)}
-                  placeholder="https://pescobarseafoodbrussels.be/ro/rezervare"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-mono"
+                <textarea
+                  rows={6}
+                  value={emailBody}
+                  onChange={(e) => setEmailBody(e.target.value)}
+                  placeholder="Scrieți mesajul promoțional sau de mulțumire aici..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-[#C8A96A] font-sans"
                 />
               </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition"
-              >
-                Anulează
-              </button>
+              {/* CTA Button config */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-600">
+                    Text Buton Acțiune (Opțional)
+                  </label>
+                  <input
+                    type="text"
+                    value={buttonText}
+                    onChange={(e) => setButtonText(e.target.value)}
+                    placeholder="ex: Rezervă o masă acum"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#C8A96A]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-600">
+                    Link Buton Acțiune
+                  </label>
+                  <input
+                    type="text"
+                    value={buttonUrl}
+                    onChange={(e) => setButtonUrl(e.target.value)}
+                    placeholder="https://pescobarseafoodbrussels.be/ro/rezervare"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-mono focus:outline-none focus:border-[#C8A96A]"
+                  />
+                </div>
+              </div>
 
-              <button
-                type="button"
-                disabled={isSending || selectedEmails.size === 0}
-                onClick={handleSendMassEmail}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-bold text-sm shadow-md transition"
-              >
-                {isSending ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                    Se trimite...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    Trimite acum la {selectedEmails.size} clienți
-                  </>
-                )}
-              </button>
+              {/* Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition"
+                >
+                  Anulează
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isSending || selectedEmails.size === 0}
+                  onClick={handleSendMassEmail}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 disabled:opacity-50 text-[#0B192C] font-extrabold text-sm shadow-md transition"
+                >
+                  {isSending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#0B192C] border-t-transparent rounded-full animate-spin" />
+                      Se trimite prin Vercel...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Trimite acum la {selectedEmails.size} clienți
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

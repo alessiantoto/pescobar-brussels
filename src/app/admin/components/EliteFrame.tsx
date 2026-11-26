@@ -16,6 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { PescobarBrandLogo } from '@/components/PescobarBrandLogo';
 import { logoutAdmin } from '@/app/actions/admin-auth';
 import {
   ADMIN_NAV_GROUPS,
@@ -47,19 +48,12 @@ function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
         <Link
           href="/admin"
           onClick={onNavigate}
-          className="flex items-center gap-3 min-w-0"
+          className="flex items-center gap-2.5 min-w-0"
         >
-          <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center shrink-0">
-            <span className="text-amber-400 font-serif font-bold text-lg">P</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-bold tracking-wide text-white truncate">
-              PESCOBAR ADMIN
-            </p>
-            <p className="text-[11px] text-amber-300/80 truncate">
-              Brussels · Control Center
-            </p>
-          </div>
+          <PescobarBrandLogo size="nav" className="!h-8 w-auto shrink-0" />
+          <span className="text-[10px] font-extrabold tracking-widest uppercase text-[#DFC286] px-2 py-0.5 rounded-full bg-white/5 border border-[#DFC286]/30 shrink-0">
+            ADMIN
+          </span>
         </Link>
         {onNavigate && (
           <button
@@ -89,16 +83,16 @@ function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
                     <Link
                       href={item.path}
                       onClick={onNavigate}
-                      className={`flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-[13px] font-medium transition ${
+                      className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-[13px] font-medium transition ${
                         active
-                          ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
+                          ? 'bg-[#DFC286]/15 border border-[#DFC286]/35 text-[#DFC286] font-bold shadow-xs'
                           : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         <Icon
                           className={`w-4 h-4 shrink-0 ${
-                            active ? 'text-slate-950' : 'text-slate-400'
+                            active ? 'text-[#DFC286]' : 'text-slate-400'
                           }`}
                         />
                         <span className="truncate">{item.name}</span>

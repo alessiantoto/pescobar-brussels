@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AlertTriangle, ArrowLeft, Lock, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PescobarBrandLogo } from '@/components/PescobarBrandLogo';
 import { verifyAdminEmail } from '@/app/actions/admin-auth';
 import {
   createSupabaseBrowserClient,
@@ -68,19 +69,12 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-dvh bg-[#070D17] flex items-center justify-center p-4">
       <div className="w-full max-w-md rounded-2xl bg-[#0F172A] border border-white/10 p-6 sm:p-8 shadow-2xl text-slate-100">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center">
-              <span className="text-amber-400 font-serif font-bold text-xl">
-                P
-              </span>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-white">Pescobar Admin</h1>
-              <p className="text-xs text-slate-400">
-                Seafood Restaurant Brussels
-              </p>
-            </div>
+            <PescobarBrandLogo size="nav" className="!h-9 w-auto" />
+            <span className="text-[10px] font-extrabold tracking-widest uppercase text-[#DFC286] px-2 py-0.5 rounded-full bg-white/5 border border-[#DFC286]/30">
+              ADMIN
+            </span>
           </div>
 
           <Link
@@ -158,7 +152,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm transition disabled:opacity-50"
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] font-bold text-sm shadow-md transition disabled:opacity-50"
           >
             {loading ? 'Se verifică...' : 'Intră în Panou'}
           </button>
