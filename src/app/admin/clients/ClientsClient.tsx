@@ -10,7 +10,6 @@ import {
   Send,
   CheckSquare,
   Square,
-  Sparkles,
   Calendar,
   X,
   ChevronLeft,
@@ -218,45 +217,31 @@ export default function ClientsClient({ initialClients }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* 1. Redesigned KPI Metric Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-              Total Clienți
-            </span>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{clients.length}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Contacte unice colectate</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100/80 border border-slate-200/60 flex items-center justify-center shrink-0">
-            <Users className="w-5 h-5 text-slate-700" />
-          </div>
+      {/* 1. Compact Metric Bar */}
+      <div className="grid grid-cols-3 divide-x divide-slate-100 bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-2xs">
+        <div className="px-1 sm:px-3 first:pl-0">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Total Clienți
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+            {clients.length}
+          </p>
         </div>
-
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-              Cu Telefon WhatsApp
-            </span>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{withPhoneCount}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Numere pentru contact direct</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-            <Phone className="w-5 h-5 text-emerald-600" />
-          </div>
+        <div className="px-1 sm:px-3">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Cu WhatsApp
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-emerald-700 mt-0.5">
+            {withPhoneCount}
+          </p>
         </div>
-
-        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-              Oaspeți Recurenți
-            </span>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{repeatCount}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Clienți cu 2+ vizite</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5 text-[#8C6D37]" />
-          </div>
+        <div className="px-1 sm:px-3 last:pr-0">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Recurenți (2+)
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+            {repeatCount}
+          </p>
         </div>
       </div>
 
@@ -276,14 +261,14 @@ export default function ClientsClient({ initialClients }: Props) {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/60 overflow-x-auto pb-1 md:pb-0">
             <button
               type="button"
               onClick={() => handleFilterChange('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+              className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
                 filterType === 'all'
-                  ? 'bg-[#0B1526] text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
               }`}
             >
               Toți ({clients.length})
@@ -291,10 +276,10 @@ export default function ClientsClient({ initialClients }: Props) {
             <button
               type="button"
               onClick={() => handleFilterChange('repeat')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+              className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
                 filterType === 'repeat'
-                  ? 'bg-[#0B1526] text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
               }`}
             >
               Recurenți (2+)
@@ -302,10 +287,10 @@ export default function ClientsClient({ initialClients }: Props) {
             <button
               type="button"
               onClick={() => handleFilterChange('with_phone')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+              className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
                 filterType === 'with_phone'
-                  ? 'bg-[#0B1526] text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
               }`}
             >
               Cu Telefon
@@ -359,7 +344,7 @@ export default function ClientsClient({ initialClients }: Props) {
                 }
                 setIsModalOpen(true);
               }}
-              className="bg-[#0B1526] hover:bg-[#132A4A] text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm border border-white/10 shadow-xs flex items-center gap-2 transition"
+              className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-3.5 py-2 rounded-xl text-xs sm:text-sm shadow-xs flex items-center gap-2 transition"
             >
               <Mail className="w-4 h-4 text-[#DFC286]" />
               <span>

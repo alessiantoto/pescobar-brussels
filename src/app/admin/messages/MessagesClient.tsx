@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import {
   MessageSquare,
-  Sparkles,
   Phone,
   Mail,
   Calendar,
@@ -66,51 +65,37 @@ export default function MessagesClient({ initialMessages }: Props) {
   };
 
   return (
-    <div className="space-y-5">
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Total Mesaje Primite
-            </span>
-            <MessageSquare className="w-5 h-5 text-[#0B1526]" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{messages.length}</p>
-          <p className="mt-1 text-xs text-slate-500">
-            Formular contact & cereri evenimente
+    <div className="space-y-4">
+      {/* Compact Metric Bar */}
+      <div className="grid grid-cols-3 divide-x divide-slate-100 bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-2xs">
+        <div className="px-1 sm:px-3 first:pl-0">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Total Mesaje
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+            {messages.length}
           </p>
         </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Evenimente Private
-            </span>
-            <Sparkles className="w-5 h-5 text-indigo-600" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{privateEventsCount}</p>
-          <p className="mt-1 text-xs text-slate-500">
-            Cereri de mese mari, aniversări sau petreceri firmă
+        <div className="px-1 sm:px-3">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Evenimente
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+            {privateEventsCount}
           </p>
         </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Întrebări Generale
-            </span>
-            <Mail className="w-5 h-5 text-emerald-600" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{generalCount}</p>
-          <p className="mt-1 text-xs text-slate-500">
-            Întrebări despre meniu, parcare, orar
+        <div className="px-1 sm:px-3 last:pr-0">
+          <p className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">
+            Întrebări
+          </p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+            {generalCount}
           </p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-2xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-2xs">
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -131,14 +116,14 @@ export default function MessagesClient({ initialMessages }: Props) {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto shrink-0">
+        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/60 overflow-x-auto shrink-0">
           <button
             type="button"
             onClick={() => handleFilterChange('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
               filterType === 'all'
-                ? 'bg-[#0B1526] text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
             }`}
           >
             Toate ({messages.length})
@@ -146,10 +131,10 @@ export default function MessagesClient({ initialMessages }: Props) {
           <button
             type="button"
             onClick={() => handleFilterChange('private_event')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
               filterType === 'private_event'
-                ? 'bg-[#0B1526] text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
             }`}
           >
             Evenimente ({privateEventsCount})
@@ -157,10 +142,10 @@ export default function MessagesClient({ initialMessages }: Props) {
           <button
             type="button"
             onClick={() => handleFilterChange('contact')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition shrink-0 ${
               filterType === 'contact'
-                ? 'bg-[#0B1526] text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 font-medium'
             }`}
           >
             Întrebări ({generalCount})
@@ -255,7 +240,7 @@ export default function MessagesClient({ initialMessages }: Props) {
                           : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       }`}
                     >
-                      {isEvent ? '🎉 Eveniment Privat' : '✉️ Formular Contact'}
+                      {isEvent ? 'Eveniment Privat' : 'Formular Contact'}
                     </span>
                     <h4 className="font-bold text-slate-900 text-sm">
                       {m.firstName} {m.lastName}

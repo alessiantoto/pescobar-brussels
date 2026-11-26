@@ -6,7 +6,6 @@ import {
   CalendarPlus,
   ChevronLeft,
   ChevronRight,
-  Clock,
   Filter,
   MessageCircle,
   Phone,
@@ -17,7 +16,6 @@ import {
   X,
   CheckCircle2,
   XCircle,
-  Armchair,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -26,8 +24,6 @@ import {
   adminUpdateReservationStatus,
 } from '@/app/actions/admin-reservations';
 import {
-  RESERVATION_STATUSES,
-  RESERVATION_STATUS_LABELS,
   RESERVATION_ZONES,
   ZONE_LABELS,
   type ReservationRow,
@@ -37,6 +33,7 @@ import {
 } from '@/lib/reservations-contract';
 
 type DateScope = 'today' | 'tomorrow' | 'upcoming' | 'all';
+type StatusFilter = 'all' | 'active' | 'cancelled';
 
 const PAGE_SIZE = 15;
 
@@ -56,7 +53,8 @@ export default function ReservationsClient({
   const tomorrow = addDaysIso(today, 1);
   const [rows, setRows] = useState(initialRows);
   const [scope, setScope] = useState<DateScope>('today');
-  const [statusFilter, setStatusFilter] = useState<ReservationStatus | 'all'>('all');
+  const [customDate, setCustomDate] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -78,23 +76,26 @@ export default function ReservationsClient({
     notes: '',
   });
 
-  // Scope counters for badges
+  // Scope counters for badges (only count ACTIVE reservations, exclude cancelled)
   const scopeCounts = useMemo(() => {
     let todayCount = 0;
     let tomorrowCount = 0;
     let upcomingCount = 0;
+    let allCount = 0;
 
     for (const r of rows) {
+      if (r.status === 'cancelled') continue;
       if (r.reservation_date === today) todayCount++;
       if (r.reservation_date === tomorrow) tomorrowCount++;
       if (r.reservation_date >= today) upcomingCount++;
+      allCount++;
     }
 
     return {
       today: todayCount,
       tomorrow: tomorrowCount,
       upcoming: upcomingCount,
-      all: rows.length,
+      all: allCount,
     };
   }, [rows, today, tomorrow]);
 
@@ -102,10 +103,19 @@ export default function ReservationsClient({
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return rows.filter((r) => {
-      if (scope === 'today' && r.reservation_date !== today) return false;
-      if (scope === 'tomorrow' && r.reservation_date !== tomorrow) return false;
-      if (scope === 'upcoming' && r.reservation_date < today) return false;
-      if (statusFilter !== 'all' && r.status !== statusFilter) return false;
+      // Date filter: if customDate is selected, use it; otherwise use quick scope pills
+      if (customDate) {
+        if (r.reservation_date !== customDate) return false;
+      } else {
+        if (scope === 'today' && r.reservation_date !== today) return false;
+        if (scope === 'tomorrow' && r.reservation_date !== tomorrow) return false;
+        if (scope === 'upcoming' && r.reservation_date < today) return false;
+      }
+
+      // Status filter: simplified to All / Active / Cancelled
+      if (statusFilter === 'active' && r.status === 'cancelled') return false;
+      if (statusFilter === 'cancelled' && r.status !== 'cancelled') return false;
+
       if (!q) return true;
 
       const fullName = `${r.first_name} ${r.last_name}`.toLowerCase();
@@ -122,7 +132,7 @@ export default function ReservationsClient({
         internalNotes.includes(q)
       );
     });
-  }, [rows, scope, statusFilter, search, today, tomorrow]);
+  }, [rows, customDate, scope, statusFilter, search, today, tomorrow]);
 
   // Pagination calculation
   const totalItems = filtered.length;
@@ -132,11 +142,17 @@ export default function ReservationsClient({
   const paginatedRows = filtered.slice(startIndex, startIndex + PAGE_SIZE);
 
   const handleScopeChange = (newScope: DateScope) => {
+    setCustomDate('');
     setScope(newScope);
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (newStatus: ReservationStatus | 'all') => {
+  const handleCustomDateChange = (date: string) => {
+    setCustomDate(date);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (newStatus: StatusFilter) => {
     setStatusFilter(newStatus);
     setCurrentPage(1);
   };
@@ -157,7 +173,11 @@ export default function ReservationsClient({
     setRows((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status } : r))
     );
-    toast.success(`Rezervare marcată: ${RESERVATION_STATUS_LABELS[status].label}`);
+    if (status === 'cancelled') {
+      toast.success('Rezervarea a fost anulată.');
+    } else {
+      toast.success('Rezervarea a fost reactivată.');
+    }
   };
 
   const handleSaveNotes = async (id: string) => {
@@ -198,44 +218,70 @@ export default function ReservationsClient({
     <div className="space-y-5">
       {/* Top Filter and Search Bar */}
       <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-4 shadow-2xs">
-        {/* Row 1: Segmented Date Pills & New Reservation CTA */}
+        {/* Row 1: Segmented Date Pills, Custom Date Picker & New Reservation CTA */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          {/* Segmented Pill Bar */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl">
-            {(
-              [
-                ['today', `Azi (${scopeCounts.today})`],
-                ['tomorrow', `Mâine (${scopeCounts.tomorrow})`],
-                ['upcoming', `Viitoare (${scopeCounts.upcoming})`],
-                ['all', `Toate (${scopeCounts.all})`],
-              ] as [DateScope, string][]
-            ).map(([key, label]) => {
-              const isActive = scope === key;
-              return (
+          {/* Segmented Pill Bar & Date Picker */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/60">
+              {(
+                [
+                  ['today', `Azi (${scopeCounts.today})`],
+                  ['tomorrow', `Mâine (${scopeCounts.tomorrow})`],
+                  ['upcoming', `Viitoare (${scopeCounts.upcoming})`],
+                  ['all', `Toate (${scopeCounts.all})`],
+                ] as [DateScope, string][]
+              ).map(([key, label]) => {
+                const isActive = !customDate && scope === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => handleScopeChange(key)}
+                    className={`px-3 py-1.5 rounded-lg text-xs transition ${
+                      isActive
+                        ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/80'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-medium'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Custom Date Input with clear button */}
+            <div className="flex items-center gap-1.5">
+              <input
+                type="date"
+                value={customDate}
+                onChange={(e) => handleCustomDateChange(e.target.value)}
+                className={`px-2.5 py-1.5 rounded-xl bg-white text-slate-800 border text-xs font-semibold focus:outline-none focus:border-slate-400 cursor-pointer shadow-xs ${
+                  customDate ? 'border-slate-800 ring-1 ring-slate-800 text-slate-900 font-bold' : 'border-slate-200'
+                }`}
+                title="Alege o dată specifică"
+              />
+              {customDate && (
                 <button
-                  key={key}
                   type="button"
-                  onClick={() => handleScopeChange(key)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                    isActive
-                      ? 'bg-[#0B1526] text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                  }`}
+                  onClick={() => handleCustomDateChange('')}
+                  className="inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition"
+                  title="Revino la filtre rapide"
                 >
-                  {label}
+                  <X className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Șterge</span>
                 </button>
-              );
-            })}
+              )}
+            </div>
           </div>
 
-          {/* Action button */}
+          {/* Action button: + Rezervare manuală */}
           <button
             type="button"
             onClick={() => setShowNew(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#0B1526] hover:bg-[#132A4A] text-white text-xs font-bold transition shadow-xs border border-white/10 shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold transition shadow-xs shrink-0"
           >
-            <Plus className="w-4 h-4" />
-            + Rezervare nouă / telefonică
+            <Plus className="w-4 h-4 text-emerald-400" />
+            Rezervare manuală
           </button>
         </div>
 
@@ -262,30 +308,28 @@ export default function ReservationsClient({
             )}
           </div>
 
-          {/* Status Select */}
+          {/* Simplified Status Select */}
           <div className="flex items-center gap-2 shrink-0">
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) =>
-                  handleStatusFilterChange(e.target.value as ReservationStatus | 'all')
+                  handleStatusFilterChange(e.target.value as StatusFilter)
                 }
                 className="px-3 py-2 pr-8 rounded-xl bg-white text-slate-900 border border-slate-200 text-xs font-semibold focus:border-slate-400 focus:outline-none appearance-none cursor-pointer"
               >
-                <option value="all">Toate statusurile</option>
-                {RESERVATION_STATUSES.map((st) => (
-                  <option key={st} value={st}>
-                    {RESERVATION_STATUS_LABELS[st].label}
-                  </option>
-                ))}
+                <option value="all">Toate rezervările</option>
+                <option value="active">Doar Active</option>
+                <option value="cancelled">Doar Anulate</option>
               </select>
               <Filter className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
 
-            {(search || statusFilter !== 'all' || scope !== 'today') && (
+            {(search || statusFilter !== 'all' || scope !== 'today' || customDate) && (
               <button
                 type="button"
                 onClick={() => {
+                  setCustomDate('');
                   setScope('today');
                   setStatusFilter('all');
                   setSearch('');
@@ -346,15 +390,19 @@ export default function ReservationsClient({
       {/* Reservations List */}
       <div className="space-y-3">
         {paginatedRows.map((r) => {
-          const stInfo = RESERVATION_STATUS_LABELS[r.status];
           const isBusy = busyId === r.id;
+          const isCancelled = r.status === 'cancelled';
           const draft = notesDraft[r.id] ?? r.internal_notes ?? '';
           const cleanPhone = (r.phone || '').replace(/[^0-9+]/g, '');
 
           return (
             <div
               key={r.id}
-              className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-3 shadow-2xs hover:border-slate-300 transition"
+              className={`rounded-2xl border p-4 sm:p-5 space-y-3 shadow-2xs transition ${
+                isCancelled
+                  ? 'opacity-65 bg-slate-50/80 border-slate-200 text-slate-500'
+                  : 'bg-white border-slate-200 hover:border-slate-300'
+              }`}
             >
               {/* Header row: Date, time, party size, zone, status badge */}
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -371,14 +419,24 @@ export default function ReservationsClient({
                     <span className="px-2 py-0.5 rounded-lg bg-sky-50 text-sky-800 text-xs font-semibold">
                       {ZONE_LABELS[r.zone]}
                     </span>
-                    <span
-                      className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${stInfo.badgeClass}`}
-                    >
-                      {stInfo.label}
-                    </span>
+                    {isCancelled ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-rose-50 text-rose-700 border-rose-200">
+                        Anulată
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+                        Activă
+                      </span>
+                    )}
                   </div>
 
-                  <p className="text-base font-bold text-slate-900">
+                  <p
+                    className={`text-base font-bold ${
+                      isCancelled
+                        ? 'line-through decoration-slate-400 text-slate-500'
+                        : 'text-slate-900'
+                    }`}
+                  >
                     {r.first_name} {r.last_name}
                   </p>
 
@@ -429,39 +487,45 @@ export default function ReservationsClient({
                 </div>
               </div>
 
-              {/* Status Transitions Row */}
+              {/* Status Action Row: 1-click simple toggle */}
               <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                  Schimbă status:
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-500 font-medium">Status:</span>
+                  {isCancelled ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-rose-600">
+                      <XCircle className="w-3.5 h-3.5" />
+                      Anulată
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Activă
+                    </span>
+                  )}
+                </div>
 
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {(
-                    [
-                      'confirmed',
-                      'seated',
-                      'completed',
-                      'no_show',
-                      'cancelled',
-                    ] as ReservationStatus[]
-                  ).map((target) => {
-                    const isCurrent = r.status === target;
-                    return (
-                      <button
-                        key={target}
-                        type="button"
-                        disabled={isBusy || isCurrent}
-                        onClick={() => handleStatus(r.id, target)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition disabled:opacity-50 ${
-                          isCurrent
-                            ? 'bg-[#0B1526] text-white border-[#0B1526]'
-                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                        }`}
-                      >
-                        {RESERVATION_STATUS_LABELS[target].label}
-                      </button>
-                    );
-                  })}
+                <div>
+                  {isCancelled ? (
+                    <button
+                      type="button"
+                      disabled={isBusy}
+                      onClick={() => handleStatus(r.id, 'confirmed')}
+                      className="inline-flex items-center gap-1.5 text-emerald-700 hover:bg-emerald-50 border border-emerald-200 rounded-lg px-2.5 py-1 text-xs font-medium transition disabled:opacity-50"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Reactivează rezervarea
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={isBusy}
+                      onClick={() => handleStatus(r.id, 'cancelled')}
+                      className="inline-flex items-center gap-1.5 text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-lg px-2.5 py-1 text-xs font-medium transition disabled:opacity-50"
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                      Anulează rezervarea
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -538,7 +602,7 @@ export default function ReservationsClient({
                         onClick={() => setCurrentPage(p)}
                         className={`w-7 h-7 rounded-lg text-xs font-bold transition ${
                           safePage === p
-                            ? 'bg-[#0B1526] text-white shadow-xs'
+                            ? 'bg-slate-900 text-white shadow-xs'
                             : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                         }`}
                       >
@@ -572,7 +636,7 @@ export default function ReservationsClient({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <CalendarPlus className="w-5 h-5 text-slate-700" />
-                Adaugă rezervare nouă / telefonică
+                Adaugă rezervare manuală
               </h3>
               <button
                 type="button"
@@ -743,7 +807,7 @@ export default function ReservationsClient({
               <button
                 type="submit"
                 disabled={creating}
-                className="px-4 py-2 rounded-xl bg-[#0B1526] hover:bg-[#132A4A] text-white text-sm font-bold transition disabled:opacity-50 shadow-xs"
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold transition disabled:opacity-50 shadow-xs"
               >
                 {creating ? 'Se salvează...' : 'Confirmă rezervarea'}
               </button>

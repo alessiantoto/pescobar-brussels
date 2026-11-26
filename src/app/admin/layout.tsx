@@ -48,7 +48,7 @@ export default async function AdminLayout({
       supabaseConfigured={isSupabaseConfigured()}
     >
       <div
-        className="min-h-dvh bg-[#f4f6f8] text-slate-900"
+        className="admin-scope min-h-dvh bg-[#f4f6f8] text-slate-900"
         style={{ colorScheme: 'light' }}
       >
         {children}

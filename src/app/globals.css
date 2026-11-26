@@ -146,12 +146,36 @@ header.sticky:not(.admin-header) {
   color: #cbd5e1 !important;
 }
 
-input,
-textarea,
-select {
-  background-color: #132a48 !important;
-  border-color: rgba(56, 189, 248, 0.35) !important;
-  color: #ffffff !important;
+/* Public site default form controls (excluding admin) */
+:not(.admin-scope) input:not([type="checkbox"]):not([type="radio"]),
+:not(.admin-scope) textarea,
+:not(.admin-scope) select {
+  background-color: #132a48;
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #ffffff;
+}
+
+/* Admin panel light form controls & inputs */
+.admin-scope input:not([type="checkbox"]):not([type="radio"]),
+.admin-scope textarea,
+.admin-scope select {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  color-scheme: light !important;
+}
+
+.admin-scope input::placeholder,
+.admin-scope textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.admin-scope input:focus,
+.admin-scope textarea:focus,
+.admin-scope select:focus {
+  border-color: #94a3b8 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2) !important;
 }
 
 /* Category pills in Ocean Theme */
