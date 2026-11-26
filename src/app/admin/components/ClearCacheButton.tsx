@@ -29,13 +29,13 @@ export default function ClearCacheButton({ compact = false }: { compact?: boolea
       type="button"
       onClick={handlePurge}
       disabled={loading}
-      className={`inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition disabled:opacity-50 ${
-        compact ? 'px-3 py-1.5 text-xs' : 'px-3.5 py-2 text-xs sm:text-sm shadow-xs'
-      }`}
+      title="Revalidează cache-ul site-ului și QR Menu"
+      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition disabled:opacity-50 shrink-0"
     >
-      <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-600' : 'text-slate-500'}`} />
-      <span>{loading ? 'Se actualizează...' : 'Actualizează Site & QR'}</span>
+      <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#DFC286]' : 'text-slate-300'}`} />
+      <span className="hidden sm:inline">
+        {loading ? 'Se actualizează...' : 'Refresh Cache'}
+      </span>
     </button>
   );
 }
-

@@ -24,6 +24,9 @@ import {
 } from '@/lib/reservations-contract';
 import { DAYS_OF_WEEK } from '@/lib/settings-contract';
 import EliteFrame from './components/EliteFrame';
+import ReservationsWeekChart, {
+  type DayReservationStat,
+} from './components/ReservationsWeekChart';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,25 +44,31 @@ function currentBrusselsDayKey() {
 
 export default async function AdminDashboardPage() {
   const today = todayInBrussels();
-  const [menuData, todayRes, settingsData, auditLogs, messagesData, clientsData] = await Promise.all([
+  const [
+    menuData,
+    todayRes,
+    upcomingRes,
+    settingsData,
+    auditLogs,
+    messagesData,
+    clientsData,
+  ] = await Promise.all([
     getAdminMenuData(),
     getAdminReservations({ scope: 'today' }),
+    getAdminReservations({ scope: 'upcoming' }),
     getAdminRestaurantSettings(),
     getRecentAuditLogs(6),
     getAdminMessages(),
     getAdminClients(),
   ]);
 
-  const { items, categories, source: menuSource } = menuData;
+  const { items } = menuData;
   const { settings } = settingsData;
   const dayKey = currentBrusselsDayKey();
   const daySched = settings.hours.days[dayKey];
   const isClosedOverride = settings.closed_days.some((d) => d.date === today);
   const isOpenToday = daySched.is_open && !isClosedOverride;
 
-  const hiddenItems = items.filter(
-    (item) => effectiveStatus(item, today) === 'hidden'
-  );
   const visibleItems = items.filter(
     (item) => effectiveStatus(item, today) !== 'hidden'
   );
@@ -78,132 +87,168 @@ export default async function AdminDashboardPage() {
   const messages = messagesData.ok ? messagesData.messages : [];
   const clients = clientsData.ok ? clientsData.clients : [];
 
+  // 7-day forecast chart data
+  const dayNamesRo = ['Dum', 'Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâm'];
+  const weekStats: DayReservationStat[] = [];
+  const todayDateObj = new Date(`${today}T12:00:00Z`);
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(todayDateObj);
+    d.setUTCDate(d.getUTCDate() + i);
+    const dateStr = d.toISOString().slice(0, 10);
+    const dayOfWeek = d.getUTCDay();
+    const dayName = dayNamesRo[dayOfWeek];
+    const dayNumber = String(d.getUTCDate());
+
+    const dayRows = upcomingRes.rows.filter(
+      (r) =>
+        r.reservation_date === dateStr &&
+        r.status !== 'cancelled' &&
+        r.status !== 'no_show'
+    );
+
+    const tablesCount = dayRows.length;
+    const coversCount = dayRows.reduce((sum, r) => sum + (r.party_size || 0), 0);
+
+    weekStats.push({
+      date: dateStr,
+      dayName,
+      dayNumber,
+      tablesCount,
+      coversCount,
+      isToday: i === 0,
+      isWeekend: dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0,
+    });
+  }
+
   return (
     <EliteFrame
       title="Dashboard"
-      subtitle={`Brussels · ${today} · Sursă meniu: ${
-        menuSource === 'supabase' ? 'Supabase Live' : 'Fallback local'
-      }`}
       actions={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Link
             href="/admin/clients"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] text-xs sm:text-sm font-extrabold transition shadow-sm"
+            className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] text-xs font-extrabold transition shadow-xs"
           >
-            <Send className="w-4 h-4" />
-            Trimite Email Reclamă
+            <Send className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Trimite Email Reclamă</span>
+            <span className="sm:hidden">Email</span>
           </Link>
           <Link
             href="/admin/dishes/new"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold hover:bg-slate-800 transition"
+            className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold transition"
           >
-            <Plus className="w-4 h-4" />
-            Preparat nou
+            <Plus className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Preparat nou</span>
           </Link>
         </div>
       }
     >
-      {/* Top KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      {/* Top 4 KPI Cards - 2x2 on Mobile, 4x1 on Desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-5">
         {/* Status Restaurant */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">
               Restaurant Azi
             </span>
             {isOpenToday ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Deschis
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <CheckCircle2 className="w-3 h-3" /> Deschis
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
                 Închis
               </span>
             )}
           </div>
-          <p className="mt-3 text-xl font-bold text-slate-900">
-            {isOpenToday
-              ? `${daySched.open} – ${daySched.close}`
-              : 'Închis astăzi'}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Bucătărie până la {daySched.kitchen_close} · Business Lunch{' '}
-            {settings.hours.businessLunchActive ? 'activ' : 'oprit'}
-          </p>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-base sm:text-xl font-black text-slate-900 leading-tight">
+              {isOpenToday ? `${daySched.open} – ${daySched.close}` : 'Închis'}
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+              Bucătărie până la {daySched.kitchen_close}
+            </p>
+          </div>
         </div>
 
         {/* Rezervari Azi */}
         <Link
           href="/admin/reservations"
-          className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-amber-400 hover:shadow-xs transition block"
+          className="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-5 shadow-2xs hover:border-[#C8A96A] transition flex flex-col justify-between"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">
               Rezervări Azi
             </span>
-            <CalendarClock className="w-4 h-4 text-amber-600" />
+            <CalendarClock className="w-4 h-4 text-[#C8A96A]" />
           </div>
-          <p className="mt-3 text-2xl font-bold text-slate-900">
-            {activeReservations.length}{' '}
-            <span className="text-sm font-medium text-slate-500">
-              mese ({totalCoversToday} pers.)
-            </span>
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            {pendingReservations.length > 0 ? (
-              <span className="text-amber-700 font-semibold">
-                {pendingReservations.length} în așteptare de confirmare
+          <div className="mt-2 sm:mt-3">
+            <p className="text-lg sm:text-2xl font-black text-slate-900 leading-tight">
+              {activeReservations.length}{' '}
+              <span className="text-xs sm:text-sm font-semibold text-slate-500">
+                mese
               </span>
-            ) : (
-              'Toate rezervările de azi sunt procesate'
-            )}
-          </p>
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+              {totalCoversToday} pers. · {pendingReservations.length > 0 ? `${pendingReservations.length} noi` : 'Procesate'}
+            </p>
+          </div>
         </Link>
 
         {/* Mesaje & Contact */}
         <Link
           href="/admin/messages"
-          className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-indigo-400 hover:shadow-xs transition block"
+          className="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-5 shadow-2xs hover:border-indigo-400 transition flex flex-col justify-between"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Mesaje & Evenimente
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">
+              Mesaje &amp; Evenimente
             </span>
             <MessageSquare className="w-4 h-4 text-indigo-600" />
           </div>
-          <p className="mt-3 text-2xl font-bold text-slate-900">
-            {messages.length}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Cereri primite din formular contact & evenimente
-          </p>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-lg sm:text-2xl font-black text-slate-900 leading-tight">
+              {messages.length}
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+              Cereri primite de pe site
+            </p>
+          </div>
         </Link>
 
         {/* Baza Clienti & Marketing */}
         <Link
           href="/admin/clients"
-          className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-blue-400 hover:shadow-xs transition block"
+          className="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-5 shadow-2xs hover:border-blue-400 transition flex flex-col justify-between"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Clienți & Marketing
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">
+              Clienți Marketing
             </span>
             <Users className="w-4 h-4 text-blue-600" />
           </div>
-          <p className="mt-3 text-2xl font-bold text-slate-900">
-            {clients.length}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Contacte email salvate · Click pt. email în masă
-          </p>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-lg sm:text-2xl font-black text-slate-900 leading-tight">
+              {clients.length}
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+              Emailuri gata pt. reclamă
+            </p>
+          </div>
         </Link>
       </div>
 
+      {/* 7-Day Reservations Forecast Chart */}
+      <div className="mb-5 sm:mb-6">
+        <ReservationsWeekChart stats={weekStats} />
+      </div>
+
       {/* Main grid: Today's reservations + Quick CTAs / Audit */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
         {/* Today's Reservations Table */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
+        <div className="lg:col-span-2 bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-2xs">
+          <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
             <div>
               <h2 className="font-bold text-slate-900 text-sm sm:text-base">
                 Rezervările de azi ({today})
@@ -212,18 +257,16 @@ export default async function AdminDashboardPage() {
                 {activeReservations.length} rezervări confirmate sau în așteptare
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Link
-                href="/admin/reservations"
-                className="text-xs font-bold text-[#0B192C] bg-[#DFC286]/25 hover:bg-[#DFC286]/40 border border-[#DFC286]/50 px-3 py-1.5 rounded-lg transition"
-              >
-                Vezi toate rezervările →
-              </Link>
-            </div>
+            <Link
+              href="/admin/reservations"
+              className="text-xs font-bold text-[#0B192C] bg-[#DFC286]/25 hover:bg-[#DFC286]/40 border border-[#DFC286]/50 px-3 py-1.5 rounded-xl transition"
+            >
+              Vezi toate rezervările →
+            </Link>
           </div>
 
           {todayRes.rows.length === 0 ? (
-            <div className="p-10 text-center text-sm text-slate-500 space-y-1">
+            <div className="p-8 sm:p-12 text-center text-sm text-slate-500 space-y-1">
               <CalendarClock className="w-8 h-8 mx-auto text-slate-300" />
               <p className="font-semibold text-slate-700">Nicio rezervare înregistrată pentru astăzi.</p>
               <p className="text-xs text-slate-400">Rezervările noi vor apărea automat aici.</p>
@@ -235,7 +278,7 @@ export default async function AdminDashboardPage() {
                 return (
                   <div
                     key={r.id}
-                    className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 hover:bg-slate-50/50 transition"
+                    className="px-4 sm:px-5 py-3 flex flex-wrap items-center justify-between gap-2.5 hover:bg-slate-50/50 transition"
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-slate-900">
@@ -251,7 +294,7 @@ export default async function AdminDashboardPage() {
                       </p>
                     </div>
                     <span
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.badgeClass}`}
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${st.badgeClass}`}
                     >
                       {st.label}
                     </span>
@@ -263,64 +306,64 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Right column: Quick Action CTAs & Activity */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Quick Actions */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <h2 className="font-bold text-slate-900 text-sm mb-3">
-              Comenzi Rapide & Management
+              Comenzi Rapide &amp; Sală
             </h2>
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <Link
                 href="/admin/reservations"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-slate-50 hover:bg-[#0B192C]/5 border border-slate-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-[#0B192C]/5 border border-slate-200 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
                   <CalendarClock className="w-4 h-4 text-[#C8A96A]" />
-                  Gestionare Rezervări & Mese
+                  Gestionare Rezervări &amp; Mese
                 </span>
                 <span className="text-[11px] text-[#C8A96A] font-bold">Deschide →</span>
               </Link>
 
               <Link
                 href="/admin/clients"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-[#0B192C]/5 hover:bg-[#0B192C]/10 border border-[#DFC286]/30 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#0B192C]/5 hover:bg-[#0B192C]/10 border border-[#DFC286]/30 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[#C8A96A]" />
-                  Trimite Reclamă & Email în Masă
+                  Trimite Reclamă &amp; Email în Masă
                 </span>
                 <span className="text-[11px] text-[#0B192C] font-extrabold">Marketing →</span>
               </Link>
 
               <Link
                 href="/admin/messages"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-indigo-600" />
-                  Mesaje Contact & Evenimente
+                  Mesaje Contact &amp; Evenimente
                 </span>
                 <span className="text-[11px] text-indigo-700 font-semibold">Inbox →</span>
               </Link>
 
               <Link
                 href="/admin/dishes"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
                   <UtensilsCrossed className="w-4 h-4 text-slate-600" />
-                  Meniu: Prețuri & Ascundere ({visibleItems.length} active)
+                  Meniu: Ascunde / Editează ({visibleItems.length} active)
                 </span>
                 <span className="text-[11px] text-slate-500 font-semibold">Catalog →</span>
               </Link>
 
               <Link
                 href="/admin/settings"
-                className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 transition"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 transition"
               >
                 <span className="flex items-center gap-2">
                   <Settings className="w-4 h-4 text-slate-600" />
-                  Program, Orar & Setări Locație
+                  Program, Orar &amp; Setări Locație
                 </span>
                 <span className="text-[11px] text-slate-500 font-semibold">Setări →</span>
               </Link>
@@ -328,7 +371,7 @@ export default async function AdminDashboardPage() {
           </div>
 
           {/* Audit log */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <h2 className="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
               <Clock className="w-4 h-4 text-slate-400" />
               Activitate recentă
@@ -338,7 +381,7 @@ export default async function AdminDashboardPage() {
                 Nicio modificare înregistrată încă.
               </p>
             ) : (
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {auditLogs.map((log) => (
                   <li key={log.id} className="text-xs border-l-2 border-[#DFC286] pl-2.5">
                     <p className="font-medium text-slate-800">{log.summary}</p>

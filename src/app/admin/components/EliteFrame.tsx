@@ -185,23 +185,23 @@ export default function EliteFrame({
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 admin-header bg-[#0B1526] border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3.5 shadow-md">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
+        <header className="sticky top-0 z-30 admin-header bg-[#0B1526] border-b border-white/10 px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3 shadow-md">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
               <AdminMenuButton />
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-black text-white truncate tracking-wide">
+                <h1 className="text-base sm:text-lg font-black text-white truncate tracking-wide">
                   {resolvedTitle}
                 </h1>
                 {subtitle && (
-                  <p className="text-xs sm:text-sm text-[#DFC286] font-medium truncate">
+                  <p className="hidden sm:block text-xs text-[#DFC286] font-medium truncate">
                     {subtitle}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {actions}
               <ClearCacheButton compact />
             </div>
@@ -209,24 +209,59 @@ export default function EliteFrame({
         </header>
 
         {!supabaseConfigured && (
-          <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 lg:px-8 py-2.5">
-            <p className="max-w-7xl mx-auto text-xs sm:text-sm text-amber-900">
-              <strong>Mod Preview / Fără DB conectată:</strong> Adaugă cheile Supabase în{' '}
-              <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono text-xs">
+          <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 lg:px-8 py-2">
+            <p className="max-w-7xl mx-auto text-xs text-amber-900">
+              <strong>Mod Preview:</strong> Adaugă cheile Supabase în{' '}
+              <code className="px-1 py-0.5 rounded bg-amber-100 font-mono text-xs">
                 .env.local
               </code>{' '}
-              și rulează migrarea SQL{' '}
-              <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono text-xs">
-                supabase/migrations/001_pescobar_core.sql
-              </code>{' '}
-              pentru a salva modificările live.
+              pentru a salva live.
             </p>
           </div>
         )}
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-8">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
+
+        {/* Mobile iOS-style Bottom Bar */}
+        <nav
+          aria-label="Navigare rapidă mobil"
+          className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0B1526]/95 backdrop-blur-md border-t border-white/10 px-2 py-1.5 flex items-center justify-around shadow-2xl"
+        >
+          {[
+            { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+            { name: 'Rezervări', path: '/admin/reservations', icon: CalendarClock },
+            { name: 'Meniu', path: '/admin/dishes', icon: UtensilsCrossed },
+            { name: 'Clienți', path: '/admin/clients', icon: Users },
+            { name: 'Mesaje', path: '/admin/messages', icon: MessageSquare },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const active = isAdminNavPathActive(pathname, tab.path);
+            return (
+              <Link
+                key={tab.path}
+                href={tab.path}
+                className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition min-w-[56px] ${
+                  active
+                    ? 'text-[#DFC286] font-bold'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <div
+                  className={`p-1 rounded-lg transition ${
+                    active ? 'bg-[#DFC286]/15' : ''
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] tracking-tight mt-0.5">
+                  {tab.name}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </div>
   );
