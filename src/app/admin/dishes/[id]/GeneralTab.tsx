@@ -87,7 +87,7 @@ export default function GeneralTab({
               }))
             }
             placeholder="Ex: Poulpe grillé à la méditerranéenne"
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-200 text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
           />
         </div>
 
@@ -105,7 +105,7 @@ export default function GeneralTab({
               }))
             }
             placeholder="Descriere apetisantă vizibilă pe site și QR Menu..."
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-200 text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
           />
         </div>
 
@@ -123,7 +123,7 @@ export default function GeneralTab({
               }))
             }
             placeholder="Ex: Recomandat cu vin alb sec sau sos vierge"
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-amber-500"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-200 text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
           />
         </div>
 
@@ -142,7 +142,7 @@ export default function GeneralTab({
                   onClick={() => toggleBadge(badge)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
                     active
-                      ? 'bg-amber-500 text-slate-950 border-amber-500'
+                      ? 'bg-[#0B1526] text-white border-[#0B1526]'
                       : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -271,7 +271,7 @@ export default function GeneralTab({
                   onChange={(e) =>
                     onChange((prev) => ({ ...prev, [k]: e.target.checked }))
                   }
-                  className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                  className="rounded border-slate-300 text-slate-900 focus:ring-slate-400"
                 />
                 <span>{ch.label}</span>
               </label>

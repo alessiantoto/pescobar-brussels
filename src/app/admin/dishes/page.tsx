@@ -19,10 +19,11 @@ export default async function AdminDishesPage() {
       actions={
         <Link
           href="/admin/dishes/new"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold hover:bg-slate-800 transition"
+          className="bg-[#0B1526] hover:bg-[#132A4A] text-white border border-white/10 text-xs sm:text-sm font-semibold px-3 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
-          Preparat nou
+          <span className="hidden sm:inline">Preparat nou</span>
+          <span className="sm:hidden">Nou</span>
         </Link>
       }
     >

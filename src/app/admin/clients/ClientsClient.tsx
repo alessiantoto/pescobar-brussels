@@ -13,9 +13,8 @@ import {
   Sparkles,
   Calendar,
   X,
-  CheckCircle2,
-  AlertCircle,
-  Filter,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { sendAdminMassEmail, type AdminClientItem } from '@/app/actions/admin-clients';
@@ -25,26 +24,28 @@ interface Props {
   initialClients: AdminClientItem[];
 }
 
+const PAGE_SIZE = 20;
+
 const TEMPLATES = [
   {
-    name: '🦞 Noutăți Meniu & Fructe de Mare',
-    subject: 'Noutăți delicioase la Pescobar Seafood Bruxelles! 🦞',
-    body: `Dragă oaspete,\n\nVă invităm să descoperiți noile platouri cu fructe de mare proaspete și preparatele de sezon pregătite cu pasiune de echipa Pescobar Bruxelles pe Quai aux Briques 46.\n\nVă așteptăm cu drag alături de cei dragi pentru o experiență culinară mediteraneană autentică!`,
+    name: 'Noutăți Meniu & Recomandarea Chef-ului',
+    subject: 'Noutăți gastronomice de sezon la Pescobar Seafood Bruxelles',
+    body: `Dragă oaspete,\n\nVă invităm să descoperiți noile selecții de fructe de mare proaspete și preparatele de sezon pregătite cu pasiune de echipa Pescobar Bruxelles pe Quai aux Briques 46.\n\nVă așteptăm cu drag alături de cei dragi pentru o experiență mediteraneană autentică în inima capitalei belgiene!`,
     buttonText: 'Rezervă o masă online',
     buttonUrl: 'https://pescobarseafoodbrussels.be/ro/rezervare',
   },
   {
-    name: '✨ Weekend Special & Platouri Regale',
-    subject: 'Rezervă-ți masa de weekend la Pescobar Bruxelles 🍷',
-    body: `Bună ziua,\n\nWeekendul acesta vă răsfățăm cu sosiri proaspete: homari, creveți regali, caracatiță pe plită și vinuri alese.\n\nLocurile pentru cină sunt limitate, vă recomandăm să vă rezervați masa din timp pentru a vă bucura de o seară memorabilă!`,
+    name: 'Invitație Degustare & Meniu Special',
+    subject: 'Invitație specială: Meniul de weekend la Pescobar Bruxelles',
+    body: `Bună ziua,\n\nPentru acest sfârșit de săptămână am pregătit o selecție specială de capturi proaspete: homari, creveți regali, caracatiță pe plită și vinuri mediteraneene alese.\n\nLocurile pentru cină sunt limitate, vă recomandăm să vă rezervați masa din timp pentru o experiență desăvârșită.`,
     buttonText: 'Vezi meniul & Rezervă',
     buttonUrl: 'https://pescobarseafoodbrussels.be/ro/meniu',
   },
   {
-    name: '⭐ Mulțumim pentru vizită!',
-    subject: 'Vă mulțumim pentru vizita la Pescobar Bruxelles! ⭐',
-    body: `Dragă prieten al restaurantului Pescobar,\n\nA fost o adevărată bucurie să vă avem ca oaspete la Bruxelles!\n\nPărerea dumneavoastră contează enorm pentru noi. Dacă v-a plăcut experiența, ne-ar ajuta foarte mult o recenzie scurtă pe Google.\n\nSă ne revedem cu bine!`,
-    buttonText: 'Lasă-ne o recenzie Google',
+    name: 'Mulțumim pentru vizită (Feedback Google)',
+    subject: 'Vă mulțumim pentru vizita la Pescobar Seafood Bruxelles',
+    body: `Dragă oaspete,\n\nA fost o deosebită plăcere să vă avem alături de noi la Pescobar Seafood Bruxelles.\n\nOpinia dumneavoastră contează mult pentru întreaga noastră echipă. Dacă ați apreciat serviciile și preparatele noastre, ne-ar bucura nespus o scurtă recenzie pe Google.\n\nVă mulțumim și vă așteptăm cu drag să reveniți!`,
+    buttonText: 'Lasă o recenzie Google',
     buttonUrl: 'https://g.page/r/pescobar-brussels',
   },
 ];
@@ -54,6 +55,7 @@ export default function ClientsClient({ initialClients }: Props) {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'repeat' | 'with_phone'>('all');
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Email modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,6 +64,16 @@ export default function ClientsClient({ initialClients }: Props) {
   const [buttonText, setButtonText] = useState('Rezervă o masă');
   const [buttonUrl, setButtonUrl] = useState('https://pescobarseafoodbrussels.be/ro/rezervare');
   const [isSending, setIsSending] = useState(false);
+
+  // Key KPI calculations
+  const withPhoneCount = useMemo(
+    () => clients.filter((c) => Boolean(c.phone && c.phone.trim().length > 0)).length,
+    [clients]
+  );
+  const repeatCount = useMemo(
+    () => clients.filter((c) => c.reservationsCount >= 2).length,
+    [clients]
+  );
 
   // Filtered clients
   const filteredClients = useMemo(() => {
@@ -77,6 +89,26 @@ export default function ClientsClient({ initialClients }: Props) {
       );
     });
   }, [clients, search, filterType]);
+
+  // Pagination calculation
+  const totalPages = Math.max(1, Math.ceil(filteredClients.length / PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedClients = useMemo(() => {
+    const start = (safeCurrentPage - 1) * PAGE_SIZE;
+    return filteredClients.slice(start, start + PAGE_SIZE);
+  }, [filteredClients, safeCurrentPage]);
+
+  // Handlers resetting page
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (type: 'all' | 'repeat' | 'with_phone') => {
+    setFilterType(type);
+    setCurrentPage(1);
+  };
 
   // Selection handlers
   const isAllSelected =
@@ -185,65 +217,61 @@ export default function ClientsClient({ initialClients }: Props) {
   };
 
   return (
-    <div className="space-y-5">
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Total Clienți Unici
+    <div className="space-y-4">
+      {/* 1. Redesigned KPI Metric Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              Total Clienți
             </span>
-            <Users className="w-5 h-5 text-[#C8A96A]" />
+            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{clients.length}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Contacte unice colectate</p>
           </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{clients.length}</p>
-          <p className="mt-1 text-xs text-slate-500">
-            Adrese de email colectate din rezervări & mesaje
-          </p>
+          <div className="w-10 h-10 rounded-xl bg-slate-100/80 border border-slate-200/60 flex items-center justify-center shrink-0">
+            <Users className="w-5 h-5 text-slate-700" />
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Clienți cu Telefon
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              Cu Telefon WhatsApp
             </span>
+            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{withPhoneCount}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Numere pentru contact direct</p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
             <Phone className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">
-            {clients.filter((c) => Boolean(c.phone)).length}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Disponibili pentru confirmări rapide WhatsApp
-          </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Clienți Fideli (2+ Mese)
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              Oaspeți Recurenți
             </span>
-            <Sparkles className="w-5 h-5 text-[#C8A96A]" />
+            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{repeatCount}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Clienți cu 2+ vizite</p>
           </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900">
-            {clients.filter((c) => c.reservationsCount >= 2).length}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Oaspeți fideli care au revenit la Pescobar
-          </p>
+          <div className="w-10 h-10 rounded-xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-[#8C6D37]" />
+          </div>
         </div>
       </div>
 
-      {/* Action Toolbar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-3">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Search */}
+      {/* 2. Filter & Action Toolbar */}
+      <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 sm:p-4 space-y-3 shadow-2xs">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+          {/* Search Input - explicit bg-white and text-slate-900 */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Caută după nume, email sau telefon..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#C8A96A]"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-white text-slate-900 border border-slate-200 focus:outline-none focus:border-slate-400 placeholder:text-slate-400 text-sm transition"
             />
           </div>
 
@@ -251,33 +279,33 @@ export default function ClientsClient({ initialClients }: Props) {
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
             <button
               type="button"
-              onClick={() => setFilterType('all')}
+              onClick={() => handleFilterChange('all')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'all'
-                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#0B1526] text-white shadow-xs'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
               Toți ({clients.length})
             </button>
             <button
               type="button"
-              onClick={() => setFilterType('repeat')}
+              onClick={() => handleFilterChange('repeat')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'repeat'
-                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#0B1526] text-white shadow-xs'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
-              Fideli (2+)
+              Recurenți (2+)
             </button>
             <button
               type="button"
-              onClick={() => setFilterType('with_phone')}
+              onClick={() => handleFilterChange('with_phone')}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 ${
                 filterType === 'with_phone'
-                  ? 'bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#0B1526] text-white shadow-xs'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
               Cu Telefon
@@ -285,8 +313,8 @@ export default function ClientsClient({ initialClients }: Props) {
           </div>
         </div>
 
-        {/* Action Buttons Row */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+        {/* Action Row */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-slate-100">
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -295,19 +323,19 @@ export default function ClientsClient({ initialClients }: Props) {
             >
               {isAllSelected ? (
                 <>
-                  <CheckSquare className="w-4 h-4 text-[#C8A96A]" />
-                  Deselectează toți ({filteredClients.length})
+                  <CheckSquare className="w-4 h-4 text-[#8C6D37]" />
+                  <span>Deselectează toți ({filteredClients.length})</span>
                 </>
               ) : (
                 <>
                   <Square className="w-4 h-4 text-slate-400" />
-                  Selectează toți ({filteredClients.length})
+                  <span>Selectează toți ({filteredClients.length})</span>
                 </>
               )}
             </button>
 
             {selectedEmails.size > 0 && (
-              <span className="text-xs font-bold text-[#0B192C] bg-[#DFC286]/25 border border-[#DFC286]/50 px-2.5 py-1 rounded-lg">
+              <span className="text-xs font-bold text-[#0B1526] bg-[#DFC286]/20 border border-[#DFC286]/50 px-2.5 py-1 rounded-lg">
                 {selectedEmails.size} selectați
               </span>
             )}
@@ -317,165 +345,266 @@ export default function ClientsClient({ initialClients }: Props) {
             <button
               type="button"
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition"
+              className="border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 transition"
             >
-              <Download className="w-3.5 h-3.5" />
-              Exportă CSV
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Exportă CSV</span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 if (selectedEmails.size === 0) {
-                  // If none selected, select all filtered by default
                   setSelectedEmails(new Set(filteredClients.map((c) => c.email)));
                 }
                 setIsModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 text-[#0B192C] text-xs font-extrabold shadow-sm transition"
+              className="bg-[#0B1526] hover:bg-[#132A4A] text-white font-semibold px-4 py-2 rounded-xl text-xs sm:text-sm border border-white/10 shadow-xs flex items-center gap-2 transition"
             >
-              <Mail className="w-4 h-4" />
-              Trimite Email în Masă ({selectedEmails.size > 0 ? selectedEmails.size : filteredClients.length})
+              <Mail className="w-4 h-4 text-[#DFC286]" />
+              <span>
+                Trimite Email în Masă ({selectedEmails.size > 0 ? selectedEmails.size : filteredClients.length})
+              </span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Clients Table / List */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+      {/* 3. Clients List with Pagination */}
+      <div className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-2xs">
         {filteredClients.length === 0 ? (
           <div className="p-12 text-center text-slate-500 space-y-2">
             <Users className="w-10 h-10 mx-auto text-slate-300" />
-            <p className="text-sm font-semibold">Niciun client găsit conform filtrelor.</p>
+            <p className="text-sm font-semibold text-slate-800">Niciun client găsit conform filtrelor.</p>
             <p className="text-xs text-slate-400">
               Clienții se adaugă automat aici pe măsură ce sosesc rezervări sau mesaje de contact.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
-            {filteredClients.map((c) => {
-              const isSelected = selectedEmails.has(c.email);
-              return (
-                <div
-                  key={c.email}
-                  onClick={() => toggleSelectOne(c.email)}
-                  className={`p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition ${
-                    isSelected
-                      ? 'bg-[#0B192C]/5 border-l-4 border-[#C8A96A]'
-                      : 'hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <button
-                      type="button"
-                      aria-label="Selectează client"
-                      className="shrink-0 text-slate-400"
-                    >
-                      {isSelected ? (
-                        <CheckSquare className="w-5 h-5 text-[#C8A96A]" />
-                      ) : (
-                        <Square className="w-5 h-5 text-slate-300" />
-                      )}
-                    </button>
+          <>
+            <div className="divide-y divide-slate-100">
+              {paginatedClients.map((c) => {
+                const isSelected = selectedEmails.has(c.email);
+                const rawPhone = c.phone ? c.phone.replace(/[^0-9]/g, '') : '';
+                return (
+                  <div
+                    key={c.email}
+                    onClick={() => toggleSelectOne(c.email)}
+                    className={`p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition ${
+                      isSelected
+                        ? 'bg-[#0B1526]/5 border-l-4 border-[#8C6D37]'
+                        : 'hover:bg-slate-50/80'
+                    }`}
+                  >
+                    <div className="flex items-start sm:items-center gap-3 min-w-0">
+                      <button
+                        type="button"
+                        aria-label="Selectează client"
+                        className="mt-0.5 sm:mt-0 shrink-0 text-slate-400"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSelectOne(c.email);
+                        }}
+                      >
+                        {isSelected ? (
+                          <CheckSquare className="w-5 h-5 text-[#8C6D37]" />
+                        ) : (
+                          <Square className="w-5 h-5 text-slate-300 hover:text-slate-400" />
+                        )}
+                      </button>
 
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-sm text-slate-900 truncate">
-                          {c.fullName}
-                        </span>
-                        {c.reservationsCount >= 2 && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#0B192C] text-[#DFC286] border border-[#DFC286]/30">
-                            Fidel ({c.reservationsCount} mese)
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-sm text-slate-900 truncate">
+                            {c.fullName}
                           </span>
-                        )}
-                        <span className="text-xs text-slate-500 font-mono">
-                          {c.email}
-                        </span>
-                      </div>
+                          {c.reservationsCount >= 2 && (
+                            <span className="bg-[#DFC286]/15 text-[#8C6D37] border border-[#DFC286]/40 font-semibold px-2 py-0.5 rounded-md text-[11px]">
+                              Oaspete Fidel ({c.reservationsCount} vizite)
+                            </span>
+                          )}
+                          <span className="text-xs text-slate-500 font-mono">
+                            {c.email}
+                          </span>
+                        </div>
 
-                      <div className="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
-                        {c.phone && (
-                          <span className="flex items-center gap-1 font-medium text-slate-700">
-                            <Phone className="w-3 h-3 text-slate-400" />
-                            {c.phone}
-                          </span>
-                        )}
-                        {c.lastVisit && (
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3 text-slate-400" />
-                            Ultima vizită: {c.lastVisit}
-                          </span>
-                        )}
-                        {c.totalGuests > 0 && (
-                          <span>Total oaspeți aduși: {c.totalGuests}</span>
-                        )}
+                        <div className="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
+                          {c.phone && (
+                            <span className="flex items-center gap-1 font-medium text-slate-700">
+                              <Phone className="w-3 h-3 text-slate-400" />
+                              {c.phone}
+                            </span>
+                          )}
+                          {c.lastVisit && (
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3 text-slate-400" />
+                              Ultima vizită: {c.lastVisit}
+                            </span>
+                          )}
+                          {c.totalGuests > 0 && (
+                            <span className="text-slate-500">
+                              Total oaspeți: {c.totalGuests}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
+
+                    {/* Direct Contact Links */}
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                      <a
+                        href={`mailto:${c.email}`}
+                        onClick={(e) => e.stopPropagation()}
+                        title={`Trimite email la ${c.email}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition"
+                      >
+                        <Mail className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Email</span>
+                      </a>
+
+                      {rawPhone && (
+                        <a
+                          href={`https://wa.me/${rawPhone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title={`Deschide WhatsApp pentru ${c.phone}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold transition"
+                        >
+                          <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>WhatsApp</span>
+                        </a>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedEmails(new Set([c.email]));
+                          setIsModalOpen(true);
+                        }}
+                        title="Compune campanie dedicată"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-medium transition"
+                      >
+                        <Send className="w-3 h-3 text-[#8C6D37]" />
+                        <span className="hidden sm:inline">Campanie</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Smart Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/60">
+                <div className="text-xs text-slate-600">
+                  Afișare{' '}
+                  <span className="font-semibold text-slate-900">
+                    {(safeCurrentPage - 1) * PAGE_SIZE + 1}
+                  </span>{' '}
+                  -{' '}
+                  <span className="font-semibold text-slate-900">
+                    {Math.min(safeCurrentPage * PAGE_SIZE, filteredClients.length)}
+                  </span>{' '}
+                  din{' '}
+                  <span className="font-semibold text-slate-900">
+                    {filteredClients.length}
+                  </span>{' '}
+                  clienți
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={safeCurrentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 transition"
+                    title="Pagina anterioară"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((page) => {
+                        // Always show first, last, and pages around current page
+                        if (totalPages <= 7) return true;
+                        if (page === 1 || page === totalPages) return true;
+                        if (Math.abs(page - safeCurrentPage) <= 1) return true;
+                        return false;
+                      })
+                      .map((page, index, array) => {
+                        const prev = array[index - 1];
+                        const showEllipsis = prev && page - prev > 1;
+                        return (
+                          <div key={page} className="flex items-center gap-1">
+                            {showEllipsis && (
+                              <span className="px-1 text-slate-400 text-xs">...</span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => setCurrentPage(page)}
+                              className={`min-w-8 h-8 px-2 rounded-lg text-xs font-semibold transition ${
+                                page === safeCurrentPage
+                                  ? 'bg-[#0B1526] text-white shadow-2xs'
+                                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              {page}
+                            </button>
+                          </div>
+                        );
+                      })}
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedEmails(new Set([c.email]));
-                        setIsModalOpen(true);
-                      }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-[#0B192C]/5 text-xs font-semibold text-slate-700 transition"
-                    >
-                      <Mail className="w-3.5 h-3.5 text-[#C8A96A]" />
-                      Email direct
-                    </button>
-                    {c.phone && (
-                      <a
-                        href={`https://wa.me/${c.phone.replace(/[^0-9]/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-xs font-semibold text-emerald-800 transition"
-                      >
-                        WhatsApp
-                      </a>
-                    )}
-                  </div>
+                  <button
+                    type="button"
+                    disabled={safeCurrentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 transition"
+                    title="Pagina următoare"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* Email Composer Modal */}
+      {/* 4. Email Composer Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-slate-200 shadow-2xl space-y-0 animate-in fade-in zoom-in-95 overflow-hidden">
-            {/* Luxury Midnight Header */}
-            <div className="bg-[#0B192C] px-6 py-5 border-b border-white/10 flex items-center justify-between text-white">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-slate-200 shadow-2xl space-y-0 animate-in fade-in zoom-in-95 overflow-hidden">
+            {/* Elegant Midnight Header */}
+            <div className="bg-[#0B1526] px-6 py-4 border-b border-white/10 flex items-center justify-between text-white">
               <div className="flex items-center gap-3">
-                <PescobarBrandLogo size="nav" className="!h-8 w-auto shrink-0" />
+                <PescobarBrandLogo size="nav" className="!h-7 w-auto shrink-0" />
                 <div>
-                  <h3 className="text-base font-bold text-white tracking-wide">
-                    Campanie Reclamă & Email Marketing
+                  <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                    Campanie Email Marketing
                   </h3>
                   <p className="text-xs text-[#DFC286] mt-0.5 font-medium">
-                    {selectedEmails.size} clienți selectați · Trimitere instantă prin Vercel & Resend
+                    {selectedEmails.size} clienți selectați · Trimitere securizată prin Resend
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-5 sm:p-6 space-y-4">
               {/* Template Selector */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Alege un model de reclamă rapid (Opțional)
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Alege un model de comunicare (Opțional)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {TEMPLATES.map((tpl) => (
@@ -483,7 +612,7 @@ export default function ClientsClient({ initialClients }: Props) {
                       key={tpl.name}
                       type="button"
                       onClick={() => handleApplyTemplate(tpl)}
-                      className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#0B192C]/5 hover:border-[#C8A96A] text-left transition"
+                      className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 hover:border-slate-300 text-left transition"
                     >
                       <p className="text-xs font-bold text-slate-900 truncate">{tpl.name}</p>
                       <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{tpl.subject}</p>
@@ -495,28 +624,28 @@ export default function ClientsClient({ initialClients }: Props) {
               {/* Subject */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Subiect Email Reclamă *
+                  Subiect Email *
                 </label>
                 <input
                   type="text"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  placeholder="ex: Noutăți delicioase de sezon la Pescobar Bruxelles"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#C8A96A]"
+                  placeholder="ex: Noutăți gastronomice de sezon la Pescobar Bruxelles"
+                  className="w-full px-3.5 py-2 rounded-xl bg-white text-slate-900 border border-slate-200 text-sm font-semibold focus:outline-none focus:border-slate-400 placeholder:text-slate-400"
                 />
               </div>
 
               {/* Body */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Mesaj Reclamă / Promoție * (Formatare liberă cu paragrafe)
+                  Mesaj Email * (Formatare liberă cu paragrafe)
                 </label>
                 <textarea
                   rows={6}
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
-                  placeholder="Scrieți mesajul promoțional sau de mulțumire aici..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-[#C8A96A] font-sans"
+                  placeholder="Scrieți mesajul pentru oaspeți aici..."
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-slate-200 text-sm focus:outline-none focus:border-slate-400 placeholder:text-slate-400 font-sans"
                 />
               </div>
 
@@ -531,7 +660,7 @@ export default function ClientsClient({ initialClients }: Props) {
                     value={buttonText}
                     onChange={(e) => setButtonText(e.target.value)}
                     placeholder="ex: Rezervă o masă acum"
-                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#C8A96A]"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-900 focus:outline-none focus:border-slate-400"
                   />
                 </div>
                 <div className="space-y-1">
@@ -543,7 +672,7 @@ export default function ClientsClient({ initialClients }: Props) {
                     value={buttonUrl}
                     onChange={(e) => setButtonUrl(e.target.value)}
                     placeholder="https://pescobarseafoodbrussels.be/ro/rezervare"
-                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-mono focus:outline-none focus:border-[#C8A96A]"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-900 font-mono focus:outline-none focus:border-slate-400"
                   />
                 </div>
               </div>
@@ -562,17 +691,17 @@ export default function ClientsClient({ initialClients }: Props) {
                   type="button"
                   disabled={isSending || selectedEmails.size === 0}
                   onClick={handleSendMassEmail}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] via-[#DFC286] to-[#C8A96A] hover:brightness-105 disabled:opacity-50 text-[#0B192C] font-extrabold text-sm shadow-md transition"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B1526] hover:bg-[#132A4A] disabled:opacity-50 text-white font-semibold text-xs sm:text-sm border border-white/10 shadow-sm transition"
                 >
                   {isSending ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-[#0B192C] border-t-transparent rounded-full animate-spin" />
-                      Se trimite prin Vercel...
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Se trimite prin Resend...
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
-                      Trimite acum la {selectedEmails.size} clienți
+                      <Send className="w-4 h-4 text-[#DFC286]" />
+                      Trimite la {selectedEmails.size} clienți
                     </>
                   )}
                 </button>

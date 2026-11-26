@@ -127,7 +127,7 @@ function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
               <p className="text-xs font-semibold text-white truncate">
                 {session.fullName || session.email}
               </p>
-              <p className="text-[10px] uppercase tracking-wider text-amber-300/80">
+              <p className="text-[10px] uppercase tracking-wider text-[#DFC286]">
                 {session.role.replace('_', ' ')}
               </p>
             </div>
@@ -185,12 +185,15 @@ export default function EliteFrame({
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 admin-header bg-[#0B1526] border-b border-white/10 px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3 shadow-md">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-2.5">
-            <div className="flex items-center gap-2.5 min-w-0">
+        <header className="sticky top-0 z-30 admin-header bg-[#0B1526] border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 shadow-md">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
               <AdminMenuButton />
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-lg font-black text-white truncate tracking-wide">
+              <div className="min-w-0 flex-1">
+                <h1
+                  title={resolvedTitle}
+                  className="text-sm sm:text-base md:text-lg font-black text-white truncate tracking-wide"
+                >
                   {resolvedTitle}
                 </h1>
                 {subtitle && (
@@ -209,10 +212,10 @@ export default function EliteFrame({
         </header>
 
         {!supabaseConfigured && (
-          <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 lg:px-8 py-2">
-            <p className="max-w-7xl mx-auto text-xs text-amber-900">
-              <strong>Mod Preview:</strong> Adaugă cheile Supabase în{' '}
-              <code className="px-1 py-0.5 rounded bg-amber-100 font-mono text-xs">
+          <div className="bg-[#DFC286]/10 border-b border-[#DFC286]/30 px-3.5 sm:px-6 lg:px-8 py-2">
+            <p className="max-w-7xl mx-auto text-xs text-slate-700">
+              <strong className="font-semibold text-slate-900">Mod Preview:</strong> Adaugă cheile Supabase în{' '}
+              <code className="px-1 py-0.5 rounded bg-white/80 border border-[#DFC286]/30 font-mono text-xs text-slate-900">
                 .env.local
               </code>{' '}
               pentru a salva live.

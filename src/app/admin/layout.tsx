@@ -47,7 +47,10 @@ export default async function AdminLayout({
       session={session}
       supabaseConfigured={isSupabaseConfigured()}
     >
-      <div className="min-h-dvh bg-[#f4f6f8] text-slate-900">
+      <div
+        className="min-h-dvh bg-[#f4f6f8] text-slate-900"
+        style={{ colorScheme: 'light' }}
+      >
         {children}
         <Toaster
           position="bottom-right"

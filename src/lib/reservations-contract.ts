@@ -16,7 +16,7 @@ export const RESERVATION_STATUS_LABELS: Record<
 > = {
   pending: {
     label: 'În așteptare',
-    badgeClass: 'bg-amber-50 text-amber-800 border-amber-200',
+    badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
   },
   confirmed: {
     label: 'Confirmată',
@@ -32,11 +32,11 @@ export const RESERVATION_STATUS_LABELS: Record<
   },
   no_show: {
     label: 'No-Show',
-    badgeClass: 'bg-rose-50 text-rose-800 border-rose-200',
+    badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
   },
   cancelled: {
     label: 'Anulată',
-    badgeClass: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+    badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
   },
 };
 

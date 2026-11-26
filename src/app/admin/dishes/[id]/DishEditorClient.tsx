@@ -159,7 +159,7 @@ export default function DishEditorClient({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition disabled:opacity-50 shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0B1526] hover:bg-[#132A4A] text-white border border-white/10 font-bold text-xs sm:text-sm transition disabled:opacity-50 shadow-xs"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Se salvează...' : 'Salvează modificările'}
@@ -174,7 +174,7 @@ export default function DishEditorClient({
           onClick={() => setActiveTab('general')}
           className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition ${
             activeTab === 'general'
-              ? 'border-amber-500 text-slate-900'
+              ? 'border-[#0B1526] text-[#0B1526] font-bold'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -187,7 +187,7 @@ export default function DishEditorClient({
           onClick={() => setActiveTab('pricing')}
           className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition ${
             activeTab === 'pricing'
-              ? 'border-amber-500 text-slate-900'
+              ? 'border-[#0B1526] text-[#0B1526] font-bold'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -200,7 +200,7 @@ export default function DishEditorClient({
           onClick={() => setActiveTab('media')}
           className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition ${
             activeTab === 'media'
-              ? 'border-amber-500 text-slate-900'
+              ? 'border-[#0B1526] text-[#0B1526] font-bold'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
