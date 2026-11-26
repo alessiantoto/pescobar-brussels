@@ -8,6 +8,7 @@ import {
   sendContactEmail,
   sendPrivateEventEmail,
 } from '@/lib/email';
+import { writeAuditLog } from '@/lib/audit';
 import type { Locale } from '@/config/site';
 
 const VALID_LOCALES = ['fr', 'nl', 'en', 'ro'] as const;
@@ -72,6 +73,26 @@ export async function POST(request: Request) {
         locale,
       });
 
+      await writeAuditLog({
+        actorEmail: email || 'contact@client',
+        action: 'contact.private_event',
+        entity: 'reservation',
+        summary: `Cerere eveniment privat: ${firstName} ${lastName} (${guestsCount || '?'} pers, ${eventDate || 'fără dată'})`,
+        diff: {
+          type: 'private_event',
+          firstName,
+          lastName,
+          company,
+          email,
+          phone,
+          eventType,
+          eventDate,
+          guestsCount,
+          message,
+          locale,
+        },
+      });
+
       return NextResponse.json({
         ok: true,
         adminSent: result.adminSent,
@@ -111,6 +132,23 @@ export async function POST(request: Request) {
       subject,
       message,
       locale,
+    });
+
+    await writeAuditLog({
+      actorEmail: email,
+      action: 'contact.message',
+      entity: 'settings',
+      summary: `Mesaj de contact: ${firstName} ${lastName} — "${subject}"`,
+      diff: {
+        type: 'contact',
+        firstName,
+        lastName,
+        email,
+        phone: phone || null,
+        subject,
+        message,
+        locale,
+      },
     });
 
     return NextResponse.json({

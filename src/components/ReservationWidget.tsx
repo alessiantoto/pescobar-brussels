@@ -105,10 +105,12 @@ interface WizardCopy {
   passContactLabel: string;
   passOccasionLabel: string;
   passMessageLabel: string;
-  whatsappConfirmBtn: string;
-  callRestaurantBtn: string;
-  emailConfirmBtn: string;
-  modifyRequestBtn: string;
+  directionsBtn: string;
+  calendarBtn: string;
+  helpLabel: string;
+  helpWhatsApp: string;
+  helpCall: string;
+  newReservationBtn: string;
   beforeVisitKicker: string;
   beforeVisitTitle: string;
   menuCtaTitle: string;
@@ -165,18 +167,20 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
       'Allergies, table famille / place poussette & bébé, précommande...',
     backBtn: 'Retour',
     validateBtn: 'Valider la réservation',
-    passKicker: 'RÉCAPITULATIF DE RÉSERVATION',
-    passTitle: 'Votre table est prête à être confirmée',
+    passKicker: 'RÉSERVATION CONFIRMÉE',
+    passTitle: 'Votre table est réservée !',
     passSubtitle:
-      'Transmettez instantanément votre demande sur WhatsApp, par téléphone ou e-mail à notre équipe Rue Jourdan 18.',
+      'Nous nous réjouissons de vous accueillir chez Pescobar Seafood Bruxelles. Votre réservation a bien été enregistrée dans notre système.',
     passGuestLabel: 'Convives',
     passContactLabel: 'Réservé au nom de',
     passOccasionLabel: 'Occasion',
-    passMessageLabel: 'Message & souhaits',
-    whatsappConfirmBtn: 'Envoyer la confirmation sur WhatsApp',
-    callRestaurantBtn: 'Appeler (+32 499 00 70 22)',
-    emailConfirmBtn: 'Confirmer par E-mail',
-    modifyRequestBtn: 'Modifier ma demande',
+    passMessageLabel: 'Remarques & souhaits',
+    directionsBtn: 'Ouvrir l’itinéraire (Google Maps)',
+    calendarBtn: 'Ajouter au calendrier',
+    helpLabel: 'Une question ou une modification ?',
+    helpWhatsApp: 'Écrire sur WhatsApp',
+    helpCall: 'Appeler le restaurant',
+    newReservationBtn: 'Réserver une autre table',
     beforeVisitKicker: 'AVANT VOTRE VENUE',
     beforeVisitTitle: 'Préparez votre passage à Bruxelles',
     menuCtaTitle: 'Parcourir la carte',
@@ -231,18 +235,20 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
       'Allergieën, familietafel / plek voor kinderwagen & baby...',
     backBtn: 'Terug',
     validateBtn: 'Reservatie bevestigen',
-    passKicker: 'RESERVATIEOVERZICHT',
-    passTitle: 'Uw reservatie is klaar voor verzending',
+    passKicker: 'RESERVATIE BEVESTIGD',
+    passTitle: 'Uw tafel is gereserveerd!',
     passSubtitle:
-      'Kies uw gewenste kanaal hieronder om uw aanvraag meteen door te sturen naar ons team in de Jourdanstraat 18.',
+      'We kijken ernaar uit u te verwelkomen bij Pescobar Seafood Brussel. Uw reservatie is succesvol opgeslagen in ons systeem.',
     passGuestLabel: 'Gasten',
     passContactLabel: 'Gereserveerd op naam van',
     passOccasionLabel: 'Gelegenheid',
-    passMessageLabel: 'Bericht & wensen',
-    whatsappConfirmBtn: 'Bevestiging versturen via WhatsApp',
-    callRestaurantBtn: 'Bel (+32 499 00 70 22)',
-    emailConfirmBtn: 'Bevestigen per E-mail',
-    modifyRequestBtn: 'Mijn aanvraag wijzigen',
+    passMessageLabel: 'Opmerkingen & wensen',
+    directionsBtn: 'Route openen (Google Maps)',
+    calendarBtn: 'Toevoegen aan agenda',
+    helpLabel: 'Vragen of wijzigingen?',
+    helpWhatsApp: 'Stuur een WhatsApp',
+    helpCall: 'Bel het restaurant',
+    newReservationBtn: 'Nog een tafel reserveren',
     beforeVisitKicker: 'VOOR UW BEZOEK',
     beforeVisitTitle: 'Bereid uw bezoek in Brussel voor',
     menuCtaTitle: 'Bekijk de menukaart',
@@ -297,18 +303,20 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
       'Allergies, family table with stroller / baby space, pre-orders...',
     backBtn: 'Back',
     validateBtn: 'Review & Confirm',
-    passKicker: 'RESERVATION PASS',
-    passTitle: 'Your reservation ticket is ready',
+    passKicker: 'RESERVATION CONFIRMED',
+    passTitle: 'Your table is booked!',
     passSubtitle:
-      'Send your booking instantly via WhatsApp, phone, or email to our hosts at Rue Jourdan 18.',
+      'We look forward to welcoming you to Pescobar Seafood Brussels. Your reservation has been successfully confirmed in our system.',
     passGuestLabel: 'Guests',
     passContactLabel: 'Reserved under',
     passOccasionLabel: 'Occasion',
-    passMessageLabel: 'Guest message & notes',
-    whatsappConfirmBtn: 'Send Confirmation via WhatsApp',
-    callRestaurantBtn: 'Call (+32 499 00 70 22)',
-    emailConfirmBtn: 'Confirm via Email',
-    modifyRequestBtn: 'Edit my reservation',
+    passMessageLabel: 'Special requests & notes',
+    directionsBtn: 'Open Directions (Google Maps)',
+    calendarBtn: 'Add to Calendar',
+    helpLabel: 'Need to adjust or have a question?',
+    helpWhatsApp: 'Message on WhatsApp',
+    helpCall: 'Call the restaurant',
+    newReservationBtn: 'Book another table',
     beforeVisitKicker: 'BEFORE YOU ARRIVE',
     beforeVisitTitle: 'Plan your evening in Brussels',
     menuCtaTitle: 'Explore the Menu',
@@ -363,18 +371,20 @@ const WIZARD_COPY: Record<Locale, WizardCopy> = {
       'Alergii, masă de familie cu loc pentru cărucior / bebe, preferințe...',
     backBtn: 'Înapoi',
     validateBtn: 'Validează rezervarea',
-    passKicker: 'BILET DE REZERVARE',
-    passTitle: 'Rezervarea este pregătită pentru confirmare',
+    passKicker: 'REZERVARE CONFIRMATĂ',
+    passTitle: 'Masa dumneavoastră este rezervată!',
     passSubtitle:
-      'Trimiteți instantaneu rezervarea prin WhatsApp, telefon sau e-mail către echipa Pescobar Bruxelles (Rue Jourdan 18).',
+      'Vă așteptăm cu drag la Pescobar Seafood Bruxelles (Rue Jourdan 18). Rezervarea a fost înregistrată cu succes.',
     passGuestLabel: 'Persoane',
     passContactLabel: 'Rezervat pe numele',
     passOccasionLabel: 'Ocazie',
-    passMessageLabel: 'Mesaj & observații',
-    whatsappConfirmBtn: 'Trimite confirmarea pe WhatsApp',
-    callRestaurantBtn: 'Sună (+32 499 00 70 22)',
-    emailConfirmBtn: 'Confirmă prin E-mail',
-    modifyRequestBtn: 'Modifică cererea',
+    passMessageLabel: 'Observații & preferințe',
+    directionsBtn: 'Deschide Traseul pe Hartă',
+    calendarBtn: 'Adaugă în Calendar',
+    helpLabel: 'Doriți să modificați sau aveți o întrebare?',
+    helpWhatsApp: 'Scrie pe WhatsApp',
+    helpCall: 'Sună restaurantul',
+    newReservationBtn: 'Fă o altă rezervare',
     beforeVisitKicker: 'ÎNAINTE SĂ AJUNGEȚI',
     beforeVisitTitle: 'Pregătește vizita ta la Pescobar',
     menuCtaTitle: 'Răsfoiește Meniul',
@@ -453,6 +463,15 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
   const guestsDisplay = `${resolvedGuests}`;
   const zoneDisplay = copy.zones[zone].title;
   const occasionDisplay = occasion.trim() || null;
+  const cleanFilter = (val: string) => {
+    const v = val.trim();
+    if (!v) return null;
+    const low = v.toLowerCase();
+    if (['nu', 'non', 'no', 'none', '-', 'da', 'ok', 'n/a'].includes(low)) return null;
+    return v;
+  };
+  const meaningfulOccasion = cleanFilter(occasion);
+  const meaningfulNotes = cleanFilter(notes);
 
   const goToStep = (nextStep: 1 | 2 | 3 | 4) => {
     setDatePickerOpen(false);
@@ -531,19 +550,29 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
       .join('\n');
   };
 
-  const buildWhatsAppUrl = () => {
-    return `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
-      buildSummaryText()
-    )}`;
+  const buildGoogleCalendarUrl = () => {
+    if (!date || !time) return '#';
+    const cleanDate = date.replace(/-/g, '');
+    const [hh, mm] = time.split(':');
+    const startHour = Number(hh) || 19;
+    const endHour = Math.min(23, startHour + 2);
+    const startStr = `${cleanDate}T${String(startHour).padStart(2, '0')}${mm || '00'}00`;
+    const endStr = `${cleanDate}T${String(endHour).padStart(2, '0')}${mm || '00'}00`;
+    const title = encodeURIComponent(
+      `Pescobar Seafood Brussels — Rezervare masă (${guestsDisplay} pers.)`
+    );
+    const details = encodeURIComponent(
+      `Rezervare masă la Pescobar Seafood Brussels.\nOaspete: ${fullName || 'Client'}\nZonă: ${zoneDisplay}\nTelefon: ${phone}\nAdresă: ${SITE_CONFIG.address.full}`
+    );
+    const location = encodeURIComponent(SITE_CONFIG.address.full);
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
   };
 
-  const buildMailtoUrl = () => {
-    const subject = `Réservation Pescobar Bruxelles — ${date} à ${time} (${guestsDisplay} ${copy.guestsUnit})${
-      fullName ? ` — ${fullName}` : ''
-    }`;
-    return `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(buildSummaryText())}`;
+  const buildWhatsAppHelpUrl = () => {
+    const text = encodeURIComponent(
+      `Bonjour Pescobar ! J'ai une réservation au nom de ${fullName || 'Client'} (${date} à ${time}, ${guestsDisplay} pers.). J'ai une question : `
+    );
+    return `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`;
   };
 
   const zoneKeys: ZoneKey[] = ['mainDining', 'terrace', 'groupTable'];
@@ -1125,37 +1154,33 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
         </form>
       )}
 
-      {/* STEP 4: Confirmation Pass + Final CTAs to Menu & Address */}
+      {/* STEP 4: Luxury Confirmation Pass & Direct Guest Utility */}
       {step === 4 && (
         <div className="relative z-10 space-y-6">
-          <div className="relative overflow-hidden rounded-2xl border border-[#C8A96A]/40 bg-[#070D17] p-6 sm:p-8">
-            <OctopusCornerTentacles position="bottom-right" className="opacity-30" />
+          <div className="relative overflow-hidden rounded-3xl border border-[#C8A96A]/35 bg-gradient-to-b from-[#0E1A2C] via-[#09111E] to-[#050912] p-5 sm:p-8 md:p-10 shadow-2xl">
+            <OctopusCornerTentacles position="bottom-right" className="opacity-20 pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col justify-between gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-start">
-              <div className="flex items-start gap-3.5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#C8A96A]/15 text-[#C8A96A]">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-                <div>
-                  <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#C8A96A]">
-                    {copy.passKicker}
-                  </span>
-                  <h3 className="mt-1 text-xl font-extrabold text-white sm:text-2xl">
-                    {copy.passTitle}
-                  </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-[#B8C7DC] sm:text-sm">
-                    {copy.passSubtitle}
-                  </p>
-                </div>
+            {/* Success Header with Glowing Badge */}
+            <div className="relative z-10 flex flex-col items-center text-center pb-6 sm:pb-8 border-b border-white/10">
+              <div className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-500/20 via-[#C8A96A]/20 to-transparent border border-emerald-400/40 text-emerald-400 shadow-[0_0_35px_rgba(16,185,129,0.25)]">
+                <CheckCircle2 className="h-8 w-8 sm:h-10 sm:w-10 text-emerald-400 animate-in zoom-in-50 duration-300" />
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+                </span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => goToStep(3)}
-                className="self-start rounded-lg border border-white/15 bg-[#0C1524] px-3 py-1.5 text-xs font-bold text-[#DFC286] transition-colors hover:border-[#C8A96A] hover:text-white"
-              >
-                {copy.modifyRequestBtn}
-              </button>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span>{copy.passKicker}</span>
+              </div>
+
+              <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl lg:text-4xl tracking-tight">
+                {copy.passTitle}
+              </h3>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[#B8C7DC] max-w-xl">
+                {copy.passSubtitle}
+              </p>
             </div>
 
             {/* Ticket Details Grid */}
@@ -1192,71 +1217,103 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
               </div>
             </div>
 
-            <div className="relative z-10 mt-4 grid grid-cols-1 gap-3 rounded-xl border border-white/10 bg-[#0C1524]/70 p-4 text-xs sm:grid-cols-2">
-              <div>
-                <span className="text-[#B8C7DC]">{copy.passContactLabel}</span>
-                <p className="mt-1 font-bold text-white">
-                  {fullName || '—'}{' '}
-                  {phone && (
-                    <span className="tabular-nums text-[#DFC286]">
-                      • {phone}
+            <div className="relative z-10 mt-4 rounded-xl border border-white/10 bg-[#0C1524]/70 p-4 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-medium text-[#8E9EB5]">
+                    {copy.passContactLabel}
+                  </span>
+                  <p className="text-sm font-extrabold text-white">
+                    {fullName || '—'}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-0.5">
+                    {phone && (
+                      <a
+                        href={`tel:${phone.replace(/\s+/g, '')}`}
+                        className="inline-flex items-center gap-1.5 font-semibold tabular-nums text-[#DFC286] hover:underline"
+                      >
+                        <Phone className="h-3 w-3" />
+                        <span>{phone}</span>
+                      </a>
+                    )}
+                    {email && (
+                      <span className="inline-flex items-center gap-1.5 text-[11px] text-[#A6B6CC]">
+                        <Mail className="h-3 w-3 text-[#C8A96A]" />
+                        <span>{email}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {meaningfulOccasion && (
+                  <div className="sm:text-right">
+                    <span className="text-[11px] font-medium text-[#8E9EB5]">
+                      {copy.passOccasionLabel}
                     </span>
-                  )}
-                  {email && (
-                    <span className="block text-[11px] text-[#8E9EB5] mt-0.5">
-                      {email}
-                    </span>
-                  )}
-                </p>
+                    <p className="mt-0.5 text-xs sm:text-sm font-bold text-white">
+                      {meaningfulOccasion}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {occasionDisplay && (
-                <div>
-                  <span className="text-[#B8C7DC]">{copy.passOccasionLabel}</span>
-                  <p className="mt-1 font-bold text-white">{occasionDisplay}</p>
+              {meaningfulNotes && (
+                <div className="mt-3.5 rounded-lg border border-white/10 bg-[#070D17]/70 p-3">
+                  <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase text-[#C8A96A]">
+                    <MessageSquare className="h-3 w-3" />
+                    {copy.passMessageLabel}
+                  </span>
+                  <p className="mt-1 text-xs italic leading-relaxed text-white/90">
+                    “{meaningfulNotes}”
+                  </p>
                 </div>
               )}
             </div>
 
-            {notes.trim() && (
-              <div className="relative z-10 mt-4 rounded-xl border border-[#C8A96A]/25 bg-[#0C1524] p-4">
-                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#C8A96A]">
-                  {copy.passMessageLabel}
-                </span>
-                <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-white/90">
-                  “{notes.trim()}”
-                </p>
-              </div>
-            )}
-
-            {/* Instant Confirmation Channels */}
-            <div className="relative z-10 mt-6 space-y-3">
+            {/* Direct High-Value Actions (Map Directions & Calendar) */}
+            <div className="relative z-10 mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
-                href={buildWhatsAppUrl()}
+                href={SITE_CONFIG.address.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#C8A96A] px-6 py-3.5 text-sm font-extrabold text-[#070D17] shadow-lg transition-all hover:bg-[#DFC286]"
+                className="flex min-h-[50px] w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#DFC286] px-5 py-3 text-xs sm:text-sm font-black text-[#070D17] shadow-lg transition-all hover:brightness-105 active:scale-[0.99]"
               >
-                <MessageSquare className="h-4 w-4" />
-                <span>{copy.whatsappConfirmBtn}</span>
+                <MapPin className="h-4 w-4" />
+                <span>{copy.directionsBtn}</span>
                 <ArrowRight className="h-4 w-4" />
               </a>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <a
+                href={buildGoogleCalendarUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[50px] w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#0C1524] px-5 py-3 text-xs sm:text-sm font-bold text-white transition-all hover:border-[#C8A96A] hover:bg-[#101C30] active:scale-[0.99]"
+              >
+                <Calendar className="h-4 w-4 text-[#C8A96A]" />
+                <span>{copy.calendarBtn}</span>
+              </a>
+            </div>
+
+            {/* Discreet Support Row */}
+            <div className="relative z-10 mt-4 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#0C1524]/40 px-4 py-2.5 text-xs text-[#8E9EB5]">
+              <span>{copy.helpLabel}</span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={buildWhatsAppHelpUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-2 flex items-center gap-1"
+                >
+                  <MessageSquare className="h-3 w-3" />
+                  <span>{copy.helpWhatsApp}</span>
+                </a>
+                <span>•</span>
                 <a
                   href={`tel:${SITE_CONFIG.phoneRaw}`}
-                  className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-white/15 bg-[#0C1524] px-5 py-3 text-xs font-bold tabular-nums text-white transition-colors hover:border-[#C8A96A]"
+                  className="font-bold text-[#DFC286] hover:text-white underline underline-offset-2 flex items-center gap-1"
                 >
-                  <Phone className="h-4 w-4 text-[#C8A96A]" />
-                  <span>{copy.callRestaurantBtn}</span>
-                </a>
-
-                <a
-                  href={buildMailtoUrl()}
-                  className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-white/15 bg-[#0C1524] px-5 py-3 text-xs font-bold text-white transition-colors hover:border-[#C8A96A]"
-                >
-                  <Mail className="h-4 w-4 text-[#C8A96A]" />
-                  <span>{copy.emailConfirmBtn}</span>
+                  <Phone className="h-3 w-3" />
+                  <span>{copy.helpCall}</span>
                 </a>
               </div>
             </div>
@@ -1333,14 +1390,26 @@ export function ReservationWidget({ dict, locale }: ReservationWidgetProps) {
               </div>
             </div>
 
-            <div className="relative z-10 mt-5 flex justify-center border-t border-white/10 pt-4">
+            <div className="relative z-10 mt-6 flex justify-center border-t border-white/10 pt-4">
               <button
                 type="button"
-                onClick={() => goToStep(1)}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#B8C7DC] transition-colors hover:text-[#DFC286]"
+                onClick={() => {
+                  setGuests(2);
+                  setDate(todayStr);
+                  setTime('19:30');
+                  setZone('mainDining');
+                  setFirstName('');
+                  setLastName('');
+                  setPhone('');
+                  setEmail('');
+                  setOccasion('');
+                  setNotes('');
+                  goToStep(1);
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8E9EB5] transition-colors hover:text-[#DFC286]"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                <span>{copy.modifyRequestBtn}</span>
+                <span>{copy.newReservationBtn}</span>
               </button>
             </div>
           </div>

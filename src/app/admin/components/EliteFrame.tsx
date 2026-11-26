@@ -3,21 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Ban,
   CalendarClock,
   ExternalLink,
-  Gift,
   Globe,
   LayoutDashboard,
-  LayoutTemplate,
   LogOut,
   Mail,
   MessageSquare,
-  QrCode,
   Settings,
-  ShoppingBag,
-  Sparkles,
-  Star,
   Users,
   UtensilsCrossed,
   X,
@@ -37,17 +30,9 @@ import ClearCacheButton from './ClearCacheButton';
 const NAV_ICONS: Record<AdminNavIconKey, typeof LayoutDashboard> = {
   dashboard: LayoutDashboard,
   reservations: CalendarClock,
-  soldOut: Ban,
-  takeaway: ShoppingBag,
   dishes: UtensilsCrossed,
-  qr: QrCode,
-  homepage: LayoutTemplate,
   customers: Users,
-  leads: MessageSquare,
-  reviews: Star,
-  promo: Sparkles,
-  coupons: Gift,
-  emails: Mail,
+  messages: MessageSquare,
   settings: Settings,
 };
 
@@ -118,17 +103,6 @@ function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
                         />
                         <span className="truncate">{item.name}</span>
                       </span>
-                      {item.phase === 2 && (
-                        <span
-                          className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-md font-bold shrink-0 ${
-                            active
-                              ? 'bg-slate-950/15 text-slate-950'
-                              : 'bg-white/10 text-slate-400'
-                          }`}
-                        >
-                          Curând
-                        </span>
-                      )}
                     </Link>
                   </li>
                 );
@@ -217,16 +191,16 @@ export default function EliteFrame({
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-3.5">
+        <header className="sticky top-0 z-30 admin-header bg-[#0B1526] border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3.5 shadow-md">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <AdminMenuButton />
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
+                <h1 className="text-lg sm:text-xl font-black text-white truncate tracking-wide">
                   {resolvedTitle}
                 </h1>
                 {subtitle && (
-                  <p className="text-xs sm:text-sm text-slate-500 truncate">
+                  <p className="text-xs sm:text-sm text-[#DFC286] font-medium truncate">
                     {subtitle}
                   </p>
                 )}
